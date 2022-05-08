@@ -1,0 +1,9 @@
+.table-item-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 16px;
+}
+.table-item-right .btn {
+    margin-left: 16px;
+}

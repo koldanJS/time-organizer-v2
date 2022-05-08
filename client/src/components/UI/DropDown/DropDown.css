@@ -1,0 +1,50 @@
+.drop-down {
+    position: absolute;
+    top: 52px;
+    right: 400px;
+    width: 200px;
+    background-color: white;
+    border: 1px solid #BEBEBE;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px #00000004,0 2px 4px #00000006,0 3px 6px #0000000d,0 4px 8px #00000013,0 5px 10px #0000001a;
+    z-index: 100;
+}
+.drop-down div {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px 0;
+}
+.drop-down .info {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.drop-down .settings {
+    border-top: 1px solid #BEBEBE;
+    border-bottom: 1px solid #BEBEBE;
+}
+.drop-down button {
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+.drop-down button:hover {
+    background-color: black;
+}
+.drop-down button p {
+    text-align: left;
+    padding-left: 10px;
+}
+.drop-down button:hover p {
+    color: white;
+}
+.blur {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 90;
+}

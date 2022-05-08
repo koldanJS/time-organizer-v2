@@ -1,0 +1,35 @@
+.table-header-right {
+    display: flex;
+    align-items: center;
+}
+.calendar-btn {
+    margin-right: 8px;
+}
+.calendar-btn img {
+    width: 22px;
+    height: 22px;
+}
+.table-header-right input {
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid gray;
+    width: 36px;
+    height: 36px;
+    padding: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.table-header-right input:hover {
+    border: 1px solid #CE6AFD;
+}
+.table-header-right input:focus {
+    border: 1px solid #CE6AFD;
+    outline: none;
+}
+.table-header-right input::-webkit-calendar-picker-indicator {
+    width: 22px;
+    height: 22px;
+    background-image: url('../../../../../img/svg/calendar-logo.svg');
+    background-position: center center;
+    cursor: pointer;
+}

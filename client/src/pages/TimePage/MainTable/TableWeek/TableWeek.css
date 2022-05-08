@@ -1,0 +1,58 @@
+.week-table {
+    width: 100%;
+}
+.week-table .header {
+    padding-left: 10px;
+    margin: 20px 0;
+}
+.week-table .days {
+    display: flex;
+    justify-content: space-between;
+}
+.week-table .days li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+}
+.week-table .days .name {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 500px;
+    padding: 10px;
+}
+.week-table .head-item {
+    background-color: #f0f0f0;
+    border-top: 1px solid #BEBEBE;
+    border-bottom: 1px solid #BEBEBE;
+}
+.week-table .head-item.days li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.week-table .head-item.days .name {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 15px 10px;
+}
+.week-table ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.week-table .week-table-item {
+    padding: 5px 0;
+    margin: 5px 0;
+}
+.week-table .week-table-item .empty-item {
+    margin: 0 auto;
+}
+.week-table .week-table-item .demiliter {
+    margin: 0;
+}

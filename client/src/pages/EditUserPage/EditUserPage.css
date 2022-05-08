@@ -1,0 +1,23 @@
+.edit-user {
+    width: 700px;
+    margin: 50px auto;
+}
+.edit-user ul {
+    list-style: none;
+    padding: 0;
+}
+.edit-user li {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+.edit-user input {
+    box-sizing: border-box;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 2px 2px 2px 3px rgb(231, 231, 231);
+    width: 200px;
+}
+.edit-user .demiliter {
+    margin: 10px 0;
+}

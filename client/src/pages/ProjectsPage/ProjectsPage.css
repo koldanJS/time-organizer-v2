@@ -1,0 +1,78 @@
+.projects {
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    margin: 0 auto;
+}
+.projects .projects-top {
+    display: flex;
+}
+.projects button.new {
+    display: flex;
+    align-items: center;
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background-color: #188433;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: all .2s;
+}
+.projects button.new:hover {
+    background-color: #0e7a29;
+}
+.projects button.new:active {
+    background-color: #0a6e23;
+}
+.projects button.new img {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+}
+.projects .demiliter {
+    margin-bottom: 20px;
+}
+.projects ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.projects-header {
+    align-items: center;
+    height: 40px;
+    background-color: #e7e7e7;
+    border-bottom: 1px solid #BEBEBE;
+    border-top: 1px solid #BEBEBE;
+}
+.projects-header img {
+    width: 25px;
+    height: 25px;
+}
+.projects-lits {
+    flex-direction: column;
+}
+.projects li {
+    box-sizing: border-box;
+    width: 24%;
+    padding: 0 10px;
+    margin: 0;
+}
+.projects li.editor {
+    width: 6%;
+}
+.projects li.description {
+    width: 40%;
+}
+.projects li.tasks {
+    width: 30%;
+}
+.projects-loader {
+    display: flex;
+    justify-content: center;
+    background-color: #e7e7e7;
+    width: 100%;
+    padding: 150px 0;
+    margin-top: 20px;
+}

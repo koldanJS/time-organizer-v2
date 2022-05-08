@@ -1,0 +1,13 @@
+header {
+    background-color: #CE6AFD;
+    border-bottom: 1px solid #B8B8B8;
+}
+.header-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.header-item.menu {
+    z-index: 95;
+}

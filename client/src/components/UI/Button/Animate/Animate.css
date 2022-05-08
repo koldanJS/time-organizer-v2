@@ -1,0 +1,52 @@
+.table-item.active {
+    background: linear-gradient(90deg, #CE6AFD5C, #F2D8FF5C, #CE6AFD5C);
+    background-size: 200% 200%;
+    animation: gradient 3s linear infinite;
+}
+.table-item.active .btn.start {
+    background-color: black;
+}
+.table-item.active .btn.start:hover {
+    opacity: .8;
+}
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes gradient {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 100%;
+    }
+    100% {
+        background-position: 0% 0%;
+    }
+}
+.table-item.active .animate {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    margin-right: 6px;
+}
+.table-item.active img {
+    position: absolute;
+    left: 0;
+}
+.table-item.active .strike {
+    top: 3px;
+    animation-name: rotation;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+.table-item.active .strike.hour {
+    animation-duration: 50s;
+}
+.table-item.active .strike.minute {
+    animation-duration: 10s;
+}

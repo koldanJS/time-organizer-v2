@@ -1,0 +1,56 @@
+.home-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 700px;
+    margin: 0 auto;
+}
+.home-page h1 {
+    margin-top: 80px;
+    width: 100%;
+}
+.home-page h2 {
+    margin: 20px 0;
+    width: 100%;
+}
+.home-page .demiliter {
+    margin: 20px 0;
+    width: 100%;
+}
+.home-page .block {
+    display: flex;
+    width: 100%;
+}
+.block-left {
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+}
+.block-left button {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #BEBEBE;
+    border-radius: 8px;
+    text-align: left;
+    height: 45px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+.block-left button:focus {
+    outline: none;
+}
+.block-left button:hover {
+    outline: auto;
+}
+.big-logo {
+    width: 250px;
+    height: 250px;
+    margin: 10px 0;
+}
+.little-logo {
+    width: 25px;
+    height: 25px;
+    margin: 0px 5px;
+}

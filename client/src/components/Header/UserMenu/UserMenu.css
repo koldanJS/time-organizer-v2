@@ -1,0 +1,21 @@
+.circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+}
+.user-name {
+    padding: 0 10px;
+}
+.user-settings {
+    display: flex;
+    align-items: center;
+}
+.user-settings img {
+    width: 15px;
+    height: 15px;
+}

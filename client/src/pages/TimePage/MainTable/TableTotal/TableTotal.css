@@ -1,0 +1,17 @@
+.table-total .total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 236px;
+}
+.total p {
+    margin-top: 25px;
+    margin-bottom: 33px;
+    margin-left: 50px;
+}
+.submit-week {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 300px;
+}

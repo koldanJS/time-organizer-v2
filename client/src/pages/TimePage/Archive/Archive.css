@@ -1,0 +1,43 @@
+.archive {
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 200px;
+}
+.archive .header {
+    padding-left: 10px;
+    margin: 20px 0;
+}
+.archive .head-item {
+    background-color: #f0f0f0;
+    border-top: 1px solid #BEBEBE;
+    border-bottom: 1px solid #BEBEBE;
+    padding: 10px 0;
+    padding-left: 10px;
+    margin: 10px 0;
+}
+.archive ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.archive .archive-item {
+    padding: 10px 0;
+    margin: 10px 0;
+}
+.archive .archive-item button {
+    color: blue;
+    text-decoration: underline;
+    background-color: transparent;
+    border: none;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.archive .archive-item button:hover {
+    color: rgb(140, 0, 255);
+}
+.archive .archive-item button:active {
+    color: rgb(212, 0, 255);
+}
+.archive .archive-item .demiliter {
+    margin: 5px 0;
+}

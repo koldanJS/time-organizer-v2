@@ -1,0 +1,7 @@
+.tabs ul {
+    display: flex;
+    list-style: none;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+}

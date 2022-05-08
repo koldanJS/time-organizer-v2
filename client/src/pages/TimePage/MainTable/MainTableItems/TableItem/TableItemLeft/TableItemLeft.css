@@ -1,0 +1,15 @@
+.table-item-left {
+    display: flex;
+    padding: 0 16px;
+    width: 100%;
+    height: 70px;
+}
+.table-item-left .basic {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 40%;
+}
+.table-item-left p {
+    margin-top: 10px;
+}

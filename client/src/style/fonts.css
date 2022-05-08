@@ -1,0 +1,41 @@
+.text {
+    color: black;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0;
+}
+.size-16 {
+    font-size: 16px;
+}
+.size-20 {
+    font-size: 20px;
+}
+.size-22 {
+    font-size: 22px;
+}
+.size-30 {
+    font-size: 30px;
+}
+.width-900 {
+    font-weight: 900;
+}
+.width-700 {
+    font-weight: 700;
+}
+.color-white {
+    color: white;
+}
+.inline-text {
+    display: inline-block;
+}
+.link {
+    color: rgb(21, 109, 185);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.link:active {
+    color: rgb(253, 52, 146);
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -1,0 +1,19 @@
+.message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 600px;
+}
+.message p {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.message p.success {
+    border: 1px solid green;
+    background-color: rgb(202, 255, 211);
+}
+.message p.error {
+    border: 1px solid red;
+    background-color: rgb(255, 202, 202);
+}

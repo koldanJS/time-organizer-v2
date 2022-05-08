@@ -1,10 +1,12 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import Navbar from './components/Navbar'
+// import Navbar from './components/Navbar'
+import Header from './components/Header/Header'
 import Loader from './components/Loader/Loader'
 import { AuthContext } from './context/AuthContext'
 import { useAuth } from './hooks/auth.hook'
 import { useRoutes } from './routes'
+import './style/style.css'
 
 const App = () => {
   // Получаем данные авторизации
@@ -22,17 +24,16 @@ const App = () => {
     // Передаем в контекст данные авторизации
     <AuthContext.Provider value={{ token, userId, login, logout, isAuthenticated }}>
       <BrowserRouter>
-        <div>
-          {
-            isAuthenticated
-              ? <Navbar />
-              : null
-          }
-          { routes }
-        </div>
+        {
+          isAuthenticated
+            // ? <Navbar />
+            ? <Header />
+            : null
+        }
+        { routes }
       </BrowserRouter>
     </AuthContext.Provider>
-  );
+  )
 }
 
 export default App

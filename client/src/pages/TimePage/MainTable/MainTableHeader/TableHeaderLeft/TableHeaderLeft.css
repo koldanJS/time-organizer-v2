@@ -1,0 +1,15 @@
+.table-header-left {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+.table-header-left p {
+    margin-right: 8px;
+}
+.table-header-left .return-link {
+    background-color: transparent;
+    border: none;
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}

@@ -1,0 +1,4 @@
+.main-table-items {
+    display: flex;
+    flex-direction: column;
+}
