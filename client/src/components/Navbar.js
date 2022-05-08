@@ -15,13 +15,13 @@ const Navbar = () => {
     return (
         <nav>
             <div className='navbar'>
-                <span >Сокращение ссылок</span>
+                <span >Time organizer</span>
                 <ul>
                     <li>
                         <NavLink to='/create' >Создать</NavLink>
                     </li>
                     <li>
-                        <NavLink to='/links' >Ссылки</NavLink>
+                        <NavLink to='/projects' >Проекты</NavLink>
                     </li>
                     <li>
                         <a href='/' onClick={ logoutHandler } >Выйти</a>

@@ -1,43 +1,60 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useHttp } from '../hooks/http.hook'
+import { useMessage } from '../hooks/message.hook'
 import { AuthContext } from '../context/AuthContext'
 import Loader from '../components/Loader/Loader'
-import LinkCard from '../components/LinkCard/LinkCard'
+import ProjectCard from '../components/ProjectCard/ProjectCard'
 
 
 const DetailPage = () => {
 
     const { token } = useContext(AuthContext)
     const { loading, request } = useHttp()
-    const [link, setLink] = useState(null)
-    const linkId = useParams().id
+    const message = useMessage()
+    const [project, setProject] = useState(null)
+    const projectId = useParams().id
     // Мемоизируем ф-ю, чтоб изменять ее только при изменении массива зависимостей
-    const getLink = useCallback(async () => {
-        console.log('getLink')
+    const getProject = useCallback(async () => {
+        console.log('getProject')
         try {
             const fetched = await request(
-                `/api/link/${linkId}`,
+                `/api/project/${projectId}`,
                 'GET',
                 null,
                 { Authorization: `Bearer ${token}` }
             )
-            setLink(fetched)
+            setProject(fetched)
         } catch(e) {}
-    }, [token, linkId, request])
-    // Получать новую ссылку при изменении getLink или перезагрузке
+    }, [token, projectId, request])
+  
+    const deleteHandler = async (id) => {
+        console.log('delete id', id)
+        try {
+            const data = await request(
+                '/api/project/delete',
+                'DELETE',
+                { projectId: id },
+                { Authorization: `Bearer ${token}` }
+            )
+            message(data.message)
+        } catch(e) {}
+    }
+
+
+    // Получать новый проект при изменении getProject или перезагрузке
     useEffect(() => {
-        getLink()
-    }, [getLink])
-    // Пока не загрузится ссылка, показывать Лодер
-    if (loading || !link) {
+        getProject()
+    }, [getProject])
+    // Пока не загрузится проект, показывать Лодер
+    if (loading || !project) {
         return <Loader />
     }
 
     return (
         <div>
             <h1>Detail Page</h1>
-            <LinkCard link={link} />
+            <ProjectCard project={project} deleteHandler={deleteHandler} />
         </div>
     )
 }
