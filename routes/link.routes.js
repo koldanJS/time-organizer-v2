@@ -41,7 +41,7 @@ router.post('/generate', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
     try {
         //Благодаря MW в req есть объект user
-        const links = await Link.find({ owner: req.user.userId })  //???
+        const links = await Link.find({ owner: req.user.userId })
         res.json(links)
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось
@@ -51,7 +51,7 @@ router.get('/', auth, async (req, res) => {
 
 router.get('/:id', auth, async (req, res) => {
     try {
-        const link = await Link.findById(req.params.id)  //???
+        const link = await Link.findById(req.params.id)
         res.json(link)
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось

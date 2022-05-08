@@ -2,5 +2,5 @@
     "port": 80,
     "jwtSecret": "client-server application",
     "mongoUri": "mongodb+srv://koldanJS:UorZFvn26COiLviP@cluster0.vf1vd.mongodb.net/app?retryWrites=true&w=majority",
-    "baseUrl": "https://sheltered-island-38136.herokuapp.com"
+    "baseUrl": "https://amazing-time-organizer.herokuapp.com"
 }
