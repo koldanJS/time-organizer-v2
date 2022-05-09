@@ -26,9 +26,9 @@ const TimePage = () => {
         )
     }
 
-    // useEffect(() => {
-    //     if (location.pathname === '/time') navigate('/time/current')
-    // })
+    useEffect(() => {
+        if (location.pathname === '/time') navigate('/time/current')
+    })
 
     return (
         <>

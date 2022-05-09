@@ -1,0 +1,1 @@
+export const GET_PROJECTS = 'PROJECT/GET_PROJECTS'

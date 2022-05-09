@@ -1,7 +1,7 @@
 import React from 'react'
 import './Message.css'
 
-const Message = ({message, type}) => {
+const Message = ({message, type, pageClass = ''}) => {
 
     const classList = [
         'text'
@@ -9,7 +9,7 @@ const Message = ({message, type}) => {
     if (type) classList.push(type)
 
     return (
-        <div className='message' >
+        <div className={ 'message ' + pageClass } >
             <p className={ classList.join(' ') }>{message}</p>
         </div>
     )

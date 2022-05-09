@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthContext'
-import { useHttp } from '../../hooks/http.hook'
+import { useHttp } from '../../hooks/useHttp'
 import AuthForm from '../../components/UI/AuthForm/AuthForm'
 import Message from '../../components/UI/Message/Message'
 import images from '../../components/img/img'
@@ -9,40 +9,36 @@ import './AuthPage.css'
 const AuthPage = () => {
     const auth = useContext(AuthContext)
     const [message, setMessage] = useState(false)
-    const { loading, error, request, clearError } = useHttp()
+    const { loading, request } = useHttp()
     const [isRegistered, setIsRegistered] = useState(true)
 
     const showMessage = () => {
         setTimeout(() => {
             setMessage(false)
         }, 3000);
-        return <Message message={message} type='error' />
+        return <Message message={ message.message } type={ message.type } />
     }
-
-    useEffect(() => {
-        if (error) setMessage(error)
-        clearError()
-    }, [error, clearError])
 
     const register = async (event, form) => {
         event.preventDefault()
-        console.log('register')
         try {
             //Чтоб запрос шел на порт 5000, как у сервера, в package.json
             //добавлено "proxy": "http://localhost:5000"
             const data = await request('/api/auth/register', 'POST', {...form})
-            console.log('data.message', data.message)
-            setMessage(data.message)
-        } catch(e) {}
+            setMessage({ message: data.message, type: 'success' })
+        } catch(e) {
+            setMessage({ message: e.message, type: 'error' })
+        }
     }
 
     const login = async (event, form) => {
         event.preventDefault()
-        console.log('login')
         try {
             const data = await request('/api/auth/login', 'POST', {...form})
             auth.login(data.token, data.userId)
-        } catch(e) {}
+        } catch(e) {
+            setMessage({ message: e.message, type: 'error' })
+        }
     }
 
     return (

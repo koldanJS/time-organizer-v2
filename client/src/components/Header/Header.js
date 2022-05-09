@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-// import { useSimpledStore } from '../../functions/functions'
+import { useSelector } from 'react-redux'
 import UserMenu from './UserMenu/UserMenu'
 import HeaderItem from './HeaderItem/HeaderItem'
 import images from '../img/img'
@@ -8,23 +8,18 @@ import DropDown from '../UI/DropDown/DropDown'
 
 const Header = () => {
 
-    const [isDropDown, sewIsDropDown] = useState(false)
-    // const { user } = useSimpledStore()
-    // const userInfo = user?.info
+    const { firstName, lastName, company } = useSelector(state => state.user)
 
-    const menuProps = { img: images.arrowLogo }
-    // if (userInfo) {
-    //     menuProps.abbr = userInfo.firstName[0] + (userInfo.lastName[0] || 'N')
-    //     menuProps.name = userInfo.firstName
-    // }
+    const [isDropDown, sewIsDropDown] = useState(false)
+
+    const menuProps = { img: images.arrowLogo, firstName, lastName }
+    const dropDownProps = { closeDropDown: () => sewIsDropDown(false), firstName, lastName, company }
 
     const headerItems = [
         {to: '/', label: '', classType: 'home', img: {src: images.homeLogo, alt: 'Home'}},
         {to: '/time', label: 'Время', classType: 'tab', img: ''},
         {to: '/projects', label: 'Проекты', classType: 'tab', img: ''}
     ]
-
-    const closeDropDown = () => { sewIsDropDown(false) }
 
     return (
         <header>
@@ -42,7 +37,7 @@ const Header = () => {
             </div>
             {
                 isDropDown
-                    ? <DropDown closeDropDown={ closeDropDown } />
+                    ? <DropDown {...dropDownProps} />
                     : null
             }
         </header>

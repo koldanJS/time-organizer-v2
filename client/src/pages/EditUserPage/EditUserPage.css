@@ -21,3 +21,6 @@
 .edit-user .demiliter {
     margin: 10px 0;
 }
+.edit-user .footer {
+    display: flex;
+}

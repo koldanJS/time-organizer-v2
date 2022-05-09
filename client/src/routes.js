@@ -16,7 +16,7 @@ export const useRoutes = isAuthenticated => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/projects-list" element={<ProjectsListPage />} />
                 <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/time" element={<TimePage />} />
+                <Route path="/time/*" element={<TimePage />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/edit-user" element={<EditUserPage />} />
                 <Route path="/detail/:id" element={<DetailPage />} />

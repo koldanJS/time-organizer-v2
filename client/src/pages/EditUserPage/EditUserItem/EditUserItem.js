@@ -1,6 +1,6 @@
 import React from 'react'
 
-const EditUserItem = ({label, items, setIsChange }) => {
+const EditUserItem = ({label, items }) => {
 
 
 
@@ -18,10 +18,7 @@ const EditUserItem = ({label, items, setIsChange }) => {
                                     className='text size-16'
                                     value={ item.value }
                                     placeholder={ item.placeholder }
-                                    onChange={ (e) => {
-                                        setIsChange(true)
-                                        item.setValue(e.target.value)
-                                    } }
+                                    onChange={ item.changeHandler }
                                     type={ item.type ? item.type : 'text' }
                                 />
                             </li>

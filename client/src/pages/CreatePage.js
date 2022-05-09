@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
-import { useHttp } from '../hooks/http.hook'
-import { useMessage } from '../hooks/message.hook'
+import { useHttp } from '../hooks/useHttp'
+import { useMessage } from '../hooks/useMessage'
 
 const CreatePage = () => {
 

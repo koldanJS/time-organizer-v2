@@ -1,107 +1,130 @@
-import React, { useState } from 'react'
-// import axiosHandler from '../../../axios/axiosHandler'
-// import { useSimpledStore, useUpdate } from '../../../functions/functions'
-// import Loader from '../../components/Loader/Loader'
+import React, { useContext, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '../../redux/actions/userActions'
+import { useHttp } from '../../hooks/useHttp'
+import { AuthContext } from '../../context/AuthContext'
 import ButtonForm from '../../components/UI/ButtonForm/ButtonForm'
 import EditUserItem from './EditUserItem/EditUserItem'
+import Message from '../../components/UI/Message/Message'
 import './EditUserPage.css'
 
 const EditUserPage = () => {
 
-    // const { userId, user, isLoading } = useSimpledStore()
-    // const { getData } = useUpdate()
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmail] = useState('')
-    const [company, setCompany] = useState('')
-    const [dateOfBirth, setDateOfBirth] = useState('')
-    const [phoneNumber, setPhoneNumber] = useState('')
+    const user = useSelector(state => state.user)
+    const dispatch = useDispatch()
+
+    const { request, loading } = useHttp()
+    const { token } = useContext(AuthContext)
+    const [form, setForm] = useState({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        company: user.company,
+        dateOfBirth: user.dateOfBirth,
+        phone: user.phone
+    })
     const [isChange, setIsChange] = useState(false)
+    const [message, setMessage] = useState(false)
+
+    const showMessage = () => {
+        setTimeout(() => {
+            setMessage(false)
+        }, 3000);
+        return <Message
+            message={message.message}
+            type={ message.type}
+            pageClass='edit-user-page'
+        />
+    }
 
     const mainItems = [
         {
             name: 'Имя',
-            value: firstName,
+            value: form.firstName,
             placeholder: 'Ваше имя...',
-            setValue: setFirstName
+            changeHandler: (event) => {
+                setIsChange(true)
+                setForm({...form, firstName: event.target.value})
+            }
         },
         {
             name: 'Фамилия',
-            value: lastName,
+            value: form.lastName,
             placeholder: 'Ваша фамилия...',
-            setValue: setLastName
+            changeHandler: (event) => {
+                setIsChange(true)
+                setForm({...form, lastName: event.target.value})
+            }
         },
         {
             name: 'Рабочая почта',
-            value: email,
+            value: form.email,
             placeholder: 'Ваш email...',
-            setValue: setEmail,
+            changeHandler: () => {},
             type: 'email'
         },
         {
             name: 'Компания',
-            value: company,
+            value: form.company,
             placeholder: 'Ваше место работы...',
-            setValue: setCompany
+            changeHandler: (event) => {
+                setIsChange(true)
+                setForm({...form, company: event.target.value})
+            }
         }
     ]
     const additionalItems = [
         {
             name: 'День рождения',
-            value: dateOfBirth,
+            value: form?.dateOfBirth,
             placeholder: 'Ваш день рождения...',
-            setValue: setDateOfBirth,
+            changeHandler: (event) => {
+                setIsChange(true)
+                setForm({...form, dateOfBirth: event.target.value})
+            },
             type: 'date'
         },
         {
             name: 'Номер телефона',
-            value: phoneNumber,
+            value: form?.phone,
             placeholder: 'Ваш номер...',
-            setValue: setPhoneNumber,
+            changeHandler: (event) => {
+                setIsChange(true)
+                setForm({...form, phone: event.target.value})
+            },
             type: 'tel'
         }
     ]
 
     const saveChanges = async () => {
-        console.log('save')
-        // const newUserInfo = {
-        //     firstName,
-        //     lastName,
-        //     email,
-        //     company,
-        //     dateOfBirth,
-        //     phoneNumber,
-        // }
-        // const newUser = {
-        //     ...user,
-        //     info: newUserInfo
-        // }
         try {
-            // await axiosHandler.put(`/users/${userId}.json`, newUser)    //Заменили user
-            // await getData(userId)   //Обновили данные состояния приложения
+            const data = await request(
+                '/api/user',
+                'PUT',
+                {...form},
+                { Authorization: `Bearer ${token}` }
+            )
+            // Если успешно, показываем, что нет изменений
             setIsChange(false)
+            // И меняем state в redux, чтоб изменилось содержимое всех компонентов, без необходимости загружать что-то
+            dispatch(setUser(form))
+            setMessage({message: data.message, type: 'success'})
         } catch(e) {
-            console.log('saveChanges(put new user)', e)
+            setMessage({message: e.message, type: 'error'})
         }
     }
 
     return (
-        // isLoading
-            // ? <div className='edit-user-loader' >
-            //     <Loader />
-            // </div>
         <main>
             <div className='edit-user' >
-                <h1 className='text size-30 width-700' >{`Ваша базовая информация, ${'user?.info?.firstName'}`}</h1>
+                <h1 className='text size-30 width-700' >{`Ваша базовая информация, ${user.firstName}`}</h1>
                 <EditUserItem
                     label='Основная информация'
                     items={ mainItems }
-                    setIsChange={ setIsChange }
                 />
                 <EditUserItem
                     label='Дополнительная информация'
                     items={ additionalItems }
-                    setIsChange={ setIsChange }
                 />
                 <div className='edit-user-item'>
                     <hr className='demiliter' />
@@ -109,21 +132,28 @@ const EditUserPage = () => {
                     <ul>
                         <li>
                             <p className='text' >{ `Количество проектов, над которыми вы сейчас работаете:` }</p>
-                            <p className='text' >{ 'user?.projectsId?.length' }</p>
+                            <p className='text' >{ user.projectsId.length }</p>
                         </li>
                         <li>
                             <p className='text' >{ `Количество задач, над которыми вы сейчас работаете:` }</p>
-                            <p className='text' >{ 'user?.tasksId?.length' }</p>
+                            <p className='text' >{ user.tasksId.length }</p>
                         </li>
                     </ul>
                 </div>
-                <ButtonForm
-                    classType='success'
-                    clickHandler={ saveChanges }
-                    disabled={ isChange ? false : true }
-                >
-                    Сохранить изменения
-                </ButtonForm>
+                <div className='footer' >
+                    <ButtonForm
+                        classType='success'
+                        clickHandler={ saveChanges }
+                        disabled={ (!isChange || loading) }
+                    >
+                        <p className='text' >Сохранить изменения</p>
+                    </ButtonForm>
+                    {
+                        message
+                            ? showMessage()
+                            : null
+                    }
+                </div>
             </div>
         </main>
     )

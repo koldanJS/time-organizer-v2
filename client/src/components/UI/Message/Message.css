@@ -3,7 +3,10 @@
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    width: 600px;
+    width: 100%;
+}
+.message.edit-user-page {
+    width: 60%;
 }
 .message p {
     padding: 5px 10px;

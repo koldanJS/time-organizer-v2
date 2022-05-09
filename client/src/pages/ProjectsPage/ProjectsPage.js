@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
-import { v4 } from 'uuid'
-// import { useSimpledStore } from '../../../functions/functions'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHttp } from '../../hooks/useHttp'
+import { useAuth } from '../../hooks/useAuth'
+import { getProjects } from '../../redux/actions/projectActions'
+import { getTasks } from '../../redux/actions/taskActions'
 import ProjectItem from './ProjectItem/ProjectItem'
 import NewProjectItem from './NewProjectItem/NewProjectItem'
 import Loader from '../../components/Loader/Loader'
@@ -10,14 +13,43 @@ import './ProjectsPage.css'
 
 const ProjectsPage = () => {
 
-    // const { user, isLoading } = useSimpledStore()
-
+    const dispatch = useDispatch()
+    const { token } = useSelector(state => state.app)
+    const projects = useSelector(state => state.projects)
+    const { request, loading } = useHttp()
+    const { logout } = useAuth()
+    const [isLoaded, setIsLoaded] = useState(false)
     const [isAddNewProject, setIsAddNewProject] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
     const [message, setMessage] = useState(false)
-    
-    const projectsId = [] //user.projectsId
 
+    const fetchData = useCallback(async () => {
+        console.log('Projects: fetchData')
+        try {
+          const projects = await request(
+              '/api/project',
+              'GET',
+              null,
+              { Authorization: `Bearer ${token}` }
+          )
+          const tasks = await request(
+            '/api/task',
+            'GET',
+            null,
+            { Authorization: `Bearer ${token}` }
+        )
+          dispatch(getProjects(projects))
+          dispatch(getTasks(tasks))
+          setIsLoaded(true)
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+        }
+    }, [token, request])
+    //Вызывается при каждой перезагрузке и изменении токена
+    useEffect(() => {
+        fetchData()    // Только при прекращении добавления проекта
+    }, [fetchData])
+    
     const showMessage = () => {
         setTimeout(() => {
             setMessage(false)
@@ -26,27 +58,36 @@ const ProjectsPage = () => {
     }
 
     const getItems = () => {
-
-        const getProjectItems = () => projectsId.map( id => <ProjectItem
-            key={ id }
-            projectId={ id }
-            isEdit={ isEdit }
-            changeIsEdit={ setIsEdit }
-            isAddNewProject={ isAddNewProject }
-            setMessage={ setMessage }
-        /> )
-
-        if (true /*isLoading*/) return (
+        // Если данные еще не загружены или грузятся
+        if (!isLoaded || loading) return (
             <div className='projects-loader' >
                 <Loader />
             </div>
         )
+        // Эта функция рендерит массив <ProjectItem />
+        const getProjectItems = () => {
+            // Если массив пуст - проектов нет
+            if (projects.length === 0) return (
+                <p className='text' >У вас еще нет проектов</p>
+            )
+            projects.map( project => <ProjectItem
+                key={ project.id }
+                projectId={ project.id }
+                isEdit={ isEdit }
+                changeIsEdit={ setIsEdit }
+                isAddNewProject={ isAddNewProject }
+                setMessage={ setMessage }
+            /> )
+        }
+        // Если в режиме добавления проекта, то сначала рендерим добавляемый проект, после остальные
         if (isAddNewProject) return (
             <>
                 <NewProjectItem
                     cancelProjectAddition={ () => setIsAddNewProject(false) }
-                    newProjectId={ v4() }
                     setMessage={ setMessage }
+                    token={ token }
+                    request={ request }
+                    fetchData={ fetchData }
                 />
                 { getProjectItems() }
             </>

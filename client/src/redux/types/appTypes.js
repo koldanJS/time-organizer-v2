@@ -1,0 +1,1 @@
+export const GET_AUTH_STATE = 'APP/GET_AUTH_STATE'

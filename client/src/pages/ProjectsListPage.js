@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { useHttp } from '../hooks/http.hook'
+import { useHttp } from '../hooks/useHttp'
 import { AuthContext } from '../context/AuthContext'
 import ProjectsList from '../components/ProjectsList/ProjectsList'
 import Loader from '../components/Loader/Loader'
