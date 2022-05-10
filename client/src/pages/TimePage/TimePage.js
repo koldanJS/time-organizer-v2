@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Tabs from './Tabs/Tabs'
-import NewEntry from '../../components/UI/NewEntryBtn/NewEntryBtn'
+import NewEntry from './NewEntry/NewEntry'
 import MainTable from './MainTable/MainTable'
 import Archive from './Archive/Archive'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -37,7 +37,7 @@ const TimePage = () => {
             </div>
             <hr className='demiliter'/>
             <div className='container'>
-                {/* { getContent() } */}
+                { getContent() }
             </div>
         </main>
     )
