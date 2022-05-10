@@ -14,7 +14,6 @@ router.put('/', auth, async (req, res) => {
         }
 
         const userData = req.body
-        console.log('userData', userData)
         await User.updateOne({_id: req.user.userId}, userData)
 
         res.json({ message: 'Пользователь изменен!' })

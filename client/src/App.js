@@ -34,7 +34,7 @@ const App = () => {
       )
       // Если есть авторизация и данные получены успешно, добавляем пользователя и данные авторизации в store
       dispatch(getUser(user))
-      dispatch(getAuthState({ token, userId, ready }))
+      dispatch(getAuthState({ token, userId, isAuth }))
       setUser(user)
     } catch(e) {
       if (e.message === 'Нет авторизации') logout()

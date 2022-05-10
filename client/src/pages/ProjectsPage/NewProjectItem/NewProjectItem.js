@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import images from '../../../components/img/img'
 import './NewProjectItem.css'
 
-const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fetchData }) => {
+const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fetchData, logout }) => {
 
     const [isAddTask, setIsAddTask] = useState(false)
     const [form, setForm] = useState({ projectName: '', description: '' })
@@ -15,7 +15,7 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fet
 
     const getTasks = () => {
         return (
-            newTasks.map((task, index) => {
+            newTasks.map( (task, index) => {
                 return (
                     <li className='task-item' key={ index }>
                         <p className='text' > { task.name } </p>
@@ -33,8 +33,8 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fet
 
     const addTask = event => {
         if (event.code !== 'Enter') return //Срабатывает только на Enter
-        if (!taskName) return setMessage('Имя задачи не должно быть пустым!')
-        if (taskName.length > 25) return setMessage('Имя задачи более 25 символов!')
+        if (!taskName) return setMessage({ message: 'Имя задачи не должно быть пустым!', type: 'error' })
+        if (taskName.length > 25) return setMessage({ message: 'Имя задачи более 25 символов!', type: 'error' })
         setNewTasks([...newTasks, { name: taskName }])    // Добавляем имя задачи, id проекта и пользователя добавятся на сервере
         setIsAddTask(false) // Отключаем редактор задач
         setTaskName('') //Далее очищаем сопутствующие поля
@@ -69,22 +69,22 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fet
     }
 
     const saveChanges = async () => {
-        if (!form.projectName) return setMessage('Имя проекта не должно быть пустым!')
-        if (form.projectName.length > 25) return setMessage('Название проекта более 25 символов!')
-        if (form.description.length > 50) return setMessage('Описание проекта более 50 символов!')
+        if (!form.projectName) return setMessage({ message: 'Имя проекта не должно быть пустым!', type: 'error' })
+        if (form.projectName.length > 25) return setMessage({ message: 'Название проекта более 25 символов!', type: 'error' })
+        if (form.description.length > 50) return setMessage({ message: 'Описание проекта более 50 символов!', type: 'error' })
         try {
-            await request(
-                '/api/project/new',
-                'PUT',
+            const response = await request(
+                '/api/project/create',
+                'POST',
                 { ...form, newTasks },
                 { Authorization: `Bearer ${token}` }
             )
-            setMessage('Проект добавлен!')
+            setMessage({ message: response.message, type: 'success' })
             await fetchData()
             cancelProjectAddition() //Закрыли компонент, добавляющий проекты
         } catch(e) {
-            // if (e.message === 'Нет авторизации') logout() Сделать везде нормальные message и добавить logout
-            setMessage('Что-то пошло не так, попробуйте снова!')
+            if (e.message === 'Нет авторизации') logout()
+            setMessage({ message: e.message, type: 'error' })
         }
     }
 

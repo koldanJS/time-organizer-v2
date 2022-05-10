@@ -1,27 +1,78 @@
 const { Router } = require('express')
 const Project = require('../models/Project')
+const Task = require('../models/Task')
 const auth = require('../middleware/auth.middleware')
 const router = Router()
 
 //Путь по умолчанию api/project + окончание
 router.post('/create', auth, async (req, res) => {
     try {
-        const { projectName, description } = req.body
+        const { projectName, description, newTasks } = req.body
         //Проверяем, существует ли такой проект у пользователя
         const existing = await Project.findOne({ name: projectName, user: req.user.userId })
-        //Если да, просто отправляем его ответом
+        //Если существует да, просто отправляем сообщение
         if (existing) {
-            return res.status(400).json({ message: 'Такой проект уже существует!', project: existing })
+            return res.status(400).json({ message: 'Проект с таким именем уже существует!' })
         }
-
-        //Создаем и сохраняем проект, userId доступен благодаря MW auth
+        // Если все норм, создаем и сохраняем проект, userId доступен благодаря MW auth
         const project = new Project({
             name: projectName, description, user: req.user.userId
         })
         await project.save()
-
+        // Сохраняем задачи и получаем их id
+        // const newTasksId = []
+        // console.log('newTasks', newTasks)
+        await newTasks.forEach(async task => {
+            const newTask = new Task({
+                name: task.name, project: project._id, user: req.user.userId
+            })
+            await newTask.save()
+            // newTasksId.push(newTask._id)
+        })
+        // console.log('newTasksId', newTasksId)
+        // Добавляем новому проекту массив id его задач
+        // await Project.updateOne({_id: project._id}, {tasksId: newTasksId})
+        // console.log('TasksId added')
         //После сохранения со статусом 'created' отправляем ответ
-        res.status(201).json({ message: 'Проект создан!', project })
+        res.status(201).json({ message: 'Проект создан!' })
+    } catch(e) {
+        //Если мы тут, что-то непредвиденное случилось
+        res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+    }
+})
+
+router.put('/edit', auth, async (req, res) => {
+    try {
+        const { projectName, description, projectId, newTasks, deletedTasksId } = req.body
+        // Проверяем, существует ли вообще такой проект
+        const existing = await Project.findById(projectId)
+        if (!existing) {
+            return res.status(404).json({ message: 'Проект не найден!' })
+        }
+        // Проверяем, изменилось ли его имя, если да, оно не должно совпадать с именем другого проекта этого пользователя
+        if (existing.name !== projectName) {
+            // Проверяем, существует ли другой проект с таким именем у пользователя
+            const sameProject = await Project.findOne({ name: projectName, user: req.user.userId })
+            // Если такой существует, отправляем ...
+            if (sameProject) {
+                return res.status(400).json({ message: 'Проект с таким именем уже существует!' })
+            }
+        }
+        // Если все норм, изменяем проект, userId доступен благодаря MW auth
+        await Project.updateOne({_id: projectId}, {name: projectName, description: description})
+        // Затем сначала удаляем старые задачи, чтоб фильтруемый массив был меньше
+        await deletedTasksId.forEach(async id => {
+            await Task.findByIdAndDelete(id)
+        })
+        // Теперь сохраняем новые задачи
+        await newTasks.forEach(async task => {
+            const newTask = new Task({
+                name: task.name, project: projectId, user: req.user.userId
+            })
+            await newTask.save()
+        })
+        //После отправляем ответ
+        res.json({ message: 'Проект изменен!' })
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось
         res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
@@ -33,14 +84,12 @@ router.delete('/delete', auth, async (req, res) => {
         const { projectId } = req.body
         //Проверяем, существует ли такой проект у пользователя
         const existing = await Project.findById(projectId)
-        //Если да, просто отправляем его ответом
+        //Если нет, просто отправляем
         if (!existing) {
             return res.status(404).json({ message: 'Проект не найден!'})
         }
-
         //Удаляем проект
         await Project.findByIdAndDelete(projectId)
-
         //После удаления отправляем ответ
         res.json({ message: 'Проект удален!' })
     } catch(e) {
@@ -60,14 +109,14 @@ router.get('/', auth, async (req, res) => {
     }
 })
 
-router.get('/:id', auth, async (req, res) => {
-    try {
-        const project = await Project.findById(req.params.id)
-        res.json(project)
-    } catch(e) {
-        //Если мы тут, что-то непредвиденное случилось
-        res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-    }
-})
+// router.get('/:id', auth, async (req, res) => {
+//     try {
+//         const project = await Project.findById(req.params.id)
+//         res.json(project)
+//     } catch(e) {
+//         //Если мы тут, что-то непредвиденное случилось
+//         res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+//     }
+// })
 
 module.exports = router

@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/useHttp'
-import { useAuth } from '../../hooks/useAuth'
 import { getProjects } from '../../redux/actions/projectActions'
 import { getTasks } from '../../redux/actions/taskActions'
 import ProjectItem from './ProjectItem/ProjectItem'
@@ -17,7 +17,7 @@ const ProjectsPage = () => {
     const { token } = useSelector(state => state.app)
     const projects = useSelector(state => state.projects)
     const { request, loading } = useHttp()
-    const { logout } = useAuth()
+    const { logout } = useContext(AuthContext)
     const [isLoaded, setIsLoaded] = useState(false)
     const [isAddNewProject, setIsAddNewProject] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
@@ -54,7 +54,7 @@ const ProjectsPage = () => {
         setTimeout(() => {
             setMessage(false)
         }, 3000);
-        return <Message message={message} type='error' />
+        return <Message message={ message.message } type={ message.type } pageClass='projects-page' />
     }
 
     const getItems = () => {
@@ -70,13 +70,17 @@ const ProjectsPage = () => {
             if (projects.length === 0) return (
                 <p className='text' >У вас еще нет проектов</p>
             )
-            projects.map( project => <ProjectItem
-                key={ project.id }
-                projectId={ project.id }
+            return projects.map( project => <ProjectItem
+                key={ project._id }
+                project={ project }
                 isEdit={ isEdit }
                 changeIsEdit={ setIsEdit }
                 isAddNewProject={ isAddNewProject }
                 setMessage={ setMessage }
+                token={ token }
+                request={ request }
+                fetchData={ fetchData }
+                logout={ logout }
             /> )
         }
         // Если в режиме добавления проекта, то сначала рендерим добавляемый проект, после остальные
@@ -88,6 +92,7 @@ const ProjectsPage = () => {
                     token={ token }
                     request={ request }
                     fetchData={ fetchData }
+                    logout={ logout }
                 />
                 { getProjectItems() }
             </>
@@ -96,7 +101,7 @@ const ProjectsPage = () => {
     }
 
     const addNewProjectStart = () => {
-        if (isEdit) return setMessage('Сначала завершите редактирование проекта')
+        if (isEdit) return setMessage({ message: 'Сначала завершите редактирование проекта', type: 'error' })
         setIsAddNewProject(true)
     }
 

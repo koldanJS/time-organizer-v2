@@ -5,6 +5,9 @@
     box-sizing: border-box;
     width: 100%;
 }
+.message.projects-page {
+    width: 600px;
+}
 .message.edit-user-page {
     width: 60%;
 }
