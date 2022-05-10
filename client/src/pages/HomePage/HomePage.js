@@ -1,15 +1,11 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-// import { useSimpledStore } from '../../../functions/functions'
 import images from '../../components/img/img'
 import './HomePage.css'
 
 const HomePage = () => {
 
-    // const { user } = useSimpledStore()
     const navigate = useNavigate()
-
-    // const userName = user?.info?.firstName
 
     return (
         <main>

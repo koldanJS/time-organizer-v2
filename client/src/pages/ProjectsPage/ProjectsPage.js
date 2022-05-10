@@ -106,7 +106,8 @@ const ProjectsPage = () => {
     }
 
     return (
-        <div className='projects' >
+        <main>
+            <div className='projects' >
             <div className='projects-top' >
                 <button
                     className='new'
@@ -140,6 +141,7 @@ const ProjectsPage = () => {
                 { getItems() }
             </ul>
         </div>
+        </main>
     )
 }
 

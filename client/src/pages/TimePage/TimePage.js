@@ -31,7 +31,7 @@ const TimePage = () => {
     })
 
     return (
-        <>
+        <main>
             <div className='container'>
                 <Tabs />
             </div>
@@ -39,7 +39,7 @@ const TimePage = () => {
             <div className='container'>
                 {/* { getContent() } */}
             </div>
-        </>
+        </main>
     )
 }
 
