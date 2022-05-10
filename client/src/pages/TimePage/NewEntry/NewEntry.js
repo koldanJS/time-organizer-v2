@@ -10,7 +10,7 @@ const NewEntry = () => {
 
     const clickHandler = () => {
         console.log('add task')
-        // setIsAddFormOn(!isAddFormOn)
+        setIsAddFormOn(!isAddFormOn)
     }
 
     const closeFormHandler = () => {

@@ -22,14 +22,14 @@ const AddTaskForm = ({ closeFormHandler }) => {
         return `${name} (${client})`
     }
     
-    const getProjectsOptions = () => user.projectsId.map(id => {
+    const getProjectsOptions = () => ['user.projectsId'].map(id => {
         // const project = projects[id]
         // return {
         //     id,
         //     text: getTextItem(project.keyName, project.projectName, project.client)
         // }
     })
-    const getTasksOptions = (projectId) => projects[projectId].tasksId.map(id => {
+    const getTasksOptions = (projectId) => ['projects[projectId].tasksId'].map(id => {
         // return {
         //     id,
         //     text: tasks[id].taskName,

@@ -8,20 +8,20 @@ const Select = ({ label, value, onChange, options, classType }) => {
     const htmlFor = `${label}-${Math.random()}`
 
     return (
-        <div className={classList.join(' ')} >
-            <label htmlFor={htmlFor}>{label}</label>
+        <div className={ classList.join(' ') } >
+            <label htmlFor={ htmlFor }>{ label }</label>
             <select
-                id={htmlFor}
-                value={value}
-                onChange={onChange}
+                id={ htmlFor }
+                value={ value }
+                onChange={ onChange }
             >
                 {options.map(option => {
                     return (
                         <option
-                            key={option.id}
-                            value={option.id}
+                            key={ option.id }
+                            value={ option.id }
                         >
-                            {option.text}
+                            { option.text }
                         </option>
                     )
                 })}
