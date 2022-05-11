@@ -1,9 +1,10 @@
 const { Schema, model, Types } = require('mongoose')
 
 const schema = new Schema({
-    date: {type: String, required: true},
-    days: {type: [Object], default: []},
+    itemIndex: {type: Number, required: true},
+    startTime: {type: Number, required: true},
+    dateString: {type: String, required: true},
     user: {type: Types.ObjectId, ref: 'User'},  //ref - к какой коллекции привязываемся
 })
 
-module.exports = model('TimesSheet', schema)
+module.exports = model('ActiveItem', schema)

@@ -11,6 +11,8 @@ app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/user', require('./routes/user.routes'))
 app.use('/api/project', require('./routes/project.routes'))
 app.use('/api/task', require('./routes/task.routes'))
+app.use('/api/timesSheet', require('./routes/timesSheet.routes'))
+app.use('/api/activeItem', require('./routes/activeItem.routes'))
 app.use('/t', require('./routes/redirect.routes'))
 
 if(process.env.NODE_ENV === 'production') {

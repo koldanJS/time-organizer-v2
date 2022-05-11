@@ -1,6 +1,6 @@
 import React from 'react'
 import images from '../../../../../components/img/img'
-// import { getFormatTime } from '../../../../../../functions/functions'
+import { getFormatTime } from '../../../../../functions'
 import './DayItem.css'
 
 const DayItem = ({isActive, isTimeOn, day, totalTime, clickHandler}) => {
@@ -18,7 +18,7 @@ const DayItem = ({isActive, isTimeOn, day, totalTime, clickHandler}) => {
         <a href='#' onClick={clickHandler} className={classList.join(' ')}>
             <p className='text width-700' >{ day }</p>
             <div className='day-time' >
-                <p className='text inline-text' >{ 'getFormatTime(totalTime)' }</p>
+                <p className='text inline-text' >{ getFormatTime(totalTime) }</p>
                 { getImage() }
             </div>
         </a>

@@ -14,7 +14,7 @@ import './ProjectsPage.css'
 const ProjectsPage = () => {
 
     const dispatch = useDispatch()
-    const { token } = useSelector(state => state.app)
+    const { token } = useSelector(state => state.auth)
     const projects = useSelector(state => state.projects)
     const { request, loading } = useHttp()
     const { logout } = useContext(AuthContext)
@@ -26,21 +26,21 @@ const ProjectsPage = () => {
     const fetchData = useCallback(async () => {
         console.log('Projects: fetchData')
         try {
-          const projects = await request(
-              '/api/project',
-              'GET',
-              null,
-              { Authorization: `Bearer ${token}` }
-          )
-          const tasks = await request(
-            '/api/task',
-            'GET',
-            null,
-            { Authorization: `Bearer ${token}` }
-        )
-          dispatch(getProjects(projects))
-          dispatch(getTasks(tasks))
-          setIsLoaded(true)
+            const projects = await request(
+                '/api/project',
+                'GET',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            const tasks = await request(
+                '/api/task',
+                'GET',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getProjects(projects))
+            dispatch(getTasks(tasks))
+            setIsLoaded(true)
         } catch(e) {
             if (e.message === 'Нет авторизации') logout()
         }

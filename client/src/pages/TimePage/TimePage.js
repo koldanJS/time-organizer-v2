@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Tabs from './Tabs/Tabs'
 import NewEntry from './NewEntry/NewEntry'
 import MainTable from './MainTable/MainTable'
 import Archive from './Archive/Archive'
-import { useLocation, useNavigate } from 'react-router-dom'
+
+
 
 const TimePage = () => {
 
@@ -11,7 +13,6 @@ const TimePage = () => {
     const navigate = useNavigate()
 
     const getContent = () => {
-
         if (location.pathname.includes('week')) return (
             <MainTable content='week' />
         )
@@ -27,7 +28,7 @@ const TimePage = () => {
     }
 
     useEffect(() => {
-        if (location.pathname === '/time') navigate('/time/current')
+        if (location.pathname === '/time') navigate('/time/current/day')
     })
 
     return (
