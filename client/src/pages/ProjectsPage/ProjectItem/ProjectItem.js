@@ -1,24 +1,20 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useFetchData } from '../../../hooks/useFetchData'
 import images from '../../../components/img/img'
 import './ProjectItem.css'
 
-const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessage, token, request, fetchData, logout }) => {
+const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessage }) => {
 
-    // console.log('project', project)
+    const { fetchProjectData, editProject, deleteProject } = useFetchData()
     const { tasks } = useSelector(state => state)
-    // console.log('tasks', tasks)
     const [isAddTask, setIsAddTask] = useState(false)
     const [form, setForm] = useState({ projectName: project.name, description: project.description })
     const [taskName, setTaskName] = useState('')
     const [newTasks, setNewTasks] = useState([])  // Новые добавляемые задачи в течении этого редактирования
-    // console.log('newTasks', newTasks)
     const [deletedTasksId, setDeletedTasksId] = useState([])  // Удаляемые задачи в течении этого редактирования
-    // console.log('deletedTasksId', deletedTasksId)
     const currentTasks = tasks.filter(task => task.project === project._id)  // Только задачи этого проекта
-    // console.log('currentTasks', currentTasks)
     const showingTasks = currentTasks.filter(task => !deletedTasksId.includes(task._id))  // Только задачи этого проекта, за исключением удаляемых
-    // console.log('showingTasks', showingTasks)
 
     const changeHandler = (event) => {
         setForm({...form, [event.target.name]: event.target.value})
@@ -112,39 +108,27 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
         changeIsEdit(false)
     }
 
-    const saveChanges = async () => {
+    const saveChangesHandler = async () => {
         if (!form.projectName) return setMessage({ message: 'Имя проекта не должно быть пустым!', type: 'error' })
         if (form.projectName.length > 25) return setMessage({ message: 'Название проекта более 25 символов!', type: 'error' })
         if (form.description.length > 50) return setMessage({ message: 'Описание проекта более 50 символов!', type: 'error' })
         try {
-            const response = await request(
-                '/api/project/edit',
-                'PUT',
-                { ...form, projectId: project._id, newTasks, deletedTasksId },
-                { Authorization: `Bearer ${token}` }
-            )
+            const response = await editProject(form, project._id, newTasks, deletedTasksId, 'editProject')
             setMessage({ message: response.message, type: 'success' })
-            await fetchData()
+            await fetchProjectData('ProjectItem: fetch projects and tasks')
             cancelEdit() //Закрыли компонент, редактирующий проекты
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
             setMessage({ message: e.message, type: 'error' })
         }
     }
 
-    const deleteProject = async () => {
+    const deleteProjectHandler = async () => {
         try {
-            const response = await request(
-                '/api/project/delete',
-                'DELETE',
-                { projectId: project._id },
-                { Authorization: `Bearer ${token}` }
-            )
+            const response = await deleteProject(project._id, 'deleteProject')
             setMessage({ message: response.message, type: 'success' })
-            await fetchData()
+            await fetchProjectData('ProjectItem: fetch projects and tasks')
             cancelEdit() //Закрыли компонент, редактирующий проекты
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
             setMessage({ message: e.message, type: 'error' })
         }
     }
@@ -162,7 +146,7 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
                         (isEdit === project._id)
                             ? <>
                                 <button
-                                    onClick={ saveChanges }
+                                    onClick={ saveChangesHandler }
                                     className='save'
                                 >
                                     <img
@@ -181,7 +165,7 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
                                     />
                                 </button>
                                 <button
-                                    onClick={ deleteProject }
+                                    onClick={ deleteProjectHandler }
                                     className='trash'    
                                 >
                                     <img

@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { useFetchData } from '../../../hooks/useFetchData'
 import images from '../../../components/img/img'
 import './NewProjectItem.css'
 
-const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fetchData, logout }) => {
+const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
 
+    const { fetchProjectData, createProject, deleteProject } = useFetchData()
     const [isAddTask, setIsAddTask] = useState(false)
     const [form, setForm] = useState({ projectName: '', description: '' })
     const [taskName, setTaskName] = useState('')
@@ -73,17 +75,11 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage, token, request, fet
         if (form.projectName.length > 25) return setMessage({ message: 'Название проекта более 25 символов!', type: 'error' })
         if (form.description.length > 50) return setMessage({ message: 'Описание проекта более 50 символов!', type: 'error' })
         try {
-            const response = await request(
-                '/api/project/create',
-                'POST',
-                { ...form, newTasks },
-                { Authorization: `Bearer ${token}` }
-            )
+            const response = await createProject(form, newTasks, 'createProject')
             setMessage({ message: response.message, type: 'success' })
-            await fetchData()
+            await fetchProjectData('ProjectItem: fetch projects and tasks')
             cancelProjectAddition() //Закрыли компонент, добавляющий проекты
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
             setMessage({ message: e.message, type: 'error' })
         }
     }

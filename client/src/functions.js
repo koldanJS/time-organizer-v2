@@ -18,7 +18,10 @@ export const getNewActiveItem = (newItemIndex) => {
     }
 }
 
-export const getAdditionTime = (activeItem) => Math.round( (Date.now() - activeItem.startTime) / msPerMin )
+export const getAdditionTime = (activeItem) => {
+    if (!activeItem) return 0
+    return Math.round( (Date.now() - activeItem.startTime) / msPerMin )
+}
 
 export const getOffset = (dateString) => {
     const selectedDate = new Date(dateString)

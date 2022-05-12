@@ -1,15 +1,15 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { getAdditionTime, getDayNumber, getFormatTime, getTotalTime } from '../../../../functions'
 import Button from '../../../../components/UI/Button/Button'
-// import { getFormatTime, getTotalTime, useSimpledStore, getAddition, getSelectedWeek, getDate, getRange, stopTracking, useUpdate, getDateString } from '../../../../../functions/functions'
-// import axiosHandler from '../../../../../axios/axiosHandler'
 import './TableTotal.css'
 
 const TableTotal = ({ content }) => {
 
-    const { user, userId, projects, tasks, selectedDate, selectedWeek, offset } = {} //useSimpledStore()
-    // const { getUpdate } = useUpdate()
+    const { offset } = useSelector(state => state.app)
+    const { timesSheet, activeItem } = useSelector(state => state)
 
-    const time = '' //getFormatTime(getTotalTime(selectedDate.dayNumber, user, selectedWeek) + getAddition( user, selectedWeek ))
+    const time = getFormatTime(getTotalTime(timesSheet.days[getDayNumber(offset)]) + getAdditionTime(activeItem))
 
     const clickHandler = async () => {
         // const weekRange = getRange(offset)  //Диапазон смещений для [Пн, Вс] в выбранной неделе
@@ -60,7 +60,7 @@ const TableTotal = ({ content }) => {
                 content === 'day'
                     ? <div className='total' >
                         <p className='text size-20 width-700' >Итого:</p>
-                        <p className='text' >{ time }</p>
+                        <p className='text size-20 width-700' >{ time }</p>
                     </div>
                     : null
             }

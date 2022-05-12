@@ -1,7 +1,7 @@
 import React from 'react'
 import './Select.css'
 
-const Select = ({ label, value, onChange, options, classType }) => {
+const Select = ({ label, value, name, onChange, options, classType }) => {
 
     const classList = ['select text size-16']
     if (classType) classList.push(classType)
@@ -12,6 +12,7 @@ const Select = ({ label, value, onChange, options, classType }) => {
             <label htmlFor={ htmlFor }>{ label }</label>
             <select
                 id={ htmlFor }
+                name={ name }
                 value={ value }
                 onChange={ onChange }
             >

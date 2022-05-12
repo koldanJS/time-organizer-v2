@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { getSelectedWeek } from '../functions'
 import { getAuthState } from '../redux/actions/authActions'
 import { getProjects } from '../redux/actions/projectActions'
@@ -46,7 +46,7 @@ export const useFetchData = () => {
                 { Authorization: `Bearer ${token}` }
             )
             const activeItem = await request(
-                '/api/activeItem',
+                '/api/ActiveItem',
                 'GET',
                 null,
                 { Authorization: `Bearer ${token}` }
@@ -65,35 +65,109 @@ export const useFetchData = () => {
         }
     }, [token, request])
 
-    const fetchNewTaskItem = useCallback(async (activeItem, deletedActiveItemId, newActiveItem, newTimesSheet, logString) => {
+    const fetchProjectData = useCallback(async (logString) => {
         if (!ready) return
         console.log(logString)
         try {
-            if (deletedActiveItemId) {
-                await request(
-                    '/api/activeItem/delete',
-                    'DELETE',
-                    { id: deletedActiveItemId },
-                    { Authorization: `Bearer ${token}` }
-                )
-                activeItem = null
-            }
-            if (newActiveItem) {
-                activeItem = await request(
-                    '/api/activeItem/create',
-                    'POST',
-                    { ...newActiveItem },
-                    { Authorization: `Bearer ${token}` }
-                )
-            }
+            const projects = await request(
+                '/api/project',
+                'GET',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            const tasks = await request(
+                '/api/task',
+                'GET',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getProjects(projects))
+            dispatch(getTasks(tasks))
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const createProject = useCallback(async (form, newTasks, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const response = await request(
+                '/api/project/create',
+                'POST',
+                { ...form, newTasks },
+                { Authorization: `Bearer ${token}` }
+            )
+            return response
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const editProject = useCallback(async (form, projectId, newTasks, deletedTasksId, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const response = await request(
+                '/api/project/edit',
+                'PUT',
+                { ...form, projectId, newTasks, deletedTasksId },
+                { Authorization: `Bearer ${token}` }
+            )
+            return response
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const deleteProject = useCallback(async (projectId, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const response = await request(
+                '/api/project/delete',
+                'DELETE',
+                { projectId },
+                { Authorization: `Bearer ${token}` }
+            )
+            return response
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const fetchNewTaskItem = useCallback(async (timesSheetId, dayNumber, newTaskItem, logString, index = -1, isDelete = false) => {
+        if (!ready) return
+        console.log(logString)
+        try {
             const timesSheet = await request(
                 '/api/timesSheet/edit',
                 'PUT',
-                { newTimesSheet },
+                { timesSheetId, dayNumber, newTaskItem, index, isDelete },
                 { Authorization: `Bearer ${token}` }
             )
             // Если все прошло успешно, можно записать состояние в state в redux
             dispatch(getTimesSheet(timesSheet))
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const startTracking = useCallback(async (index, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const activeItem = await request(
+                '/api/ActiveItem/create',
+                'POST',
+                { itemIndex: index },
+                { Authorization: `Bearer ${token}` }
+            )
             dispatch(getActiveItem(activeItem))
         } catch(e) {
             if (e.message === 'Нет авторизации') logout()
@@ -101,5 +175,23 @@ export const useFetchData = () => {
         }
     }, [token, request])
 
-    return { isLoad, loading, fetchData, fetchNewTaskItem }
+    const stopTracking = useCallback(async (logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const response = await request(
+                '/api/ActiveItem/stop',
+                'DELETE',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getActiveItem(null))
+            dispatch(getTimesSheet(response.editTimesSheet))
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    return { isLoad, loading, fetchData, fetchProjectData, createProject, editProject, deleteProject, fetchNewTaskItem, startTracking, stopTracking }
 }

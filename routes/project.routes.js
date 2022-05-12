@@ -19,25 +19,18 @@ router.post('/create', auth, async (req, res) => {
             name: projectName, description, user: req.user.userId
         })
         await project.save()
-        // Сохраняем задачи и получаем их id
-        // const newTasksId = []
-        // console.log('newTasks', newTasks)
+        // Сохраняем задачи
         await newTasks.forEach(async task => {
             const newTask = new Task({
                 name: task.name, project: project._id, user: req.user.userId
             })
             await newTask.save()
-            // newTasksId.push(newTask._id)
         })
-        // console.log('newTasksId', newTasksId)
-        // Добавляем новому проекту массив id его задач
-        // await Project.updateOne({_id: project._id}, {tasksId: newTasksId})
-        // console.log('TasksId added')
         //После сохранения со статусом 'created' отправляем ответ
         res.status(201).json({ message: 'Проект создан!' })
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось
-        res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+        res.status(500).json({ message: 'При создании проекта что-то пошло не так' })
     }
 })
 
@@ -75,7 +68,7 @@ router.put('/edit', auth, async (req, res) => {
         res.json({ message: 'Проект изменен!' })
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось
-        res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+        res.status(500).json({ message: 'При изменении проекта что-то пошло не так' })
     }
 })
 
@@ -90,11 +83,16 @@ router.delete('/delete', auth, async (req, res) => {
         }
         //Удаляем проект
         await Project.findByIdAndDelete(projectId)
+        // И его задачи
+        const deletedTasks = await Task.find({ project: projectId, user: req.user.userId })
+        deletedTasks.forEach(async task => {
+            await Task.findByIdAndDelete(task._id)
+        })
         //После удаления отправляем ответ
         res.json({ message: 'Проект удален!' })
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось
-        res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+        res.status(500).json({ message: 'При удалении проекта что-то пошло не так' })
     }
 })
 
@@ -105,18 +103,8 @@ router.get('/', auth, async (req, res) => {
         res.json(projects)
     } catch(e) {
         //Если мы тут, что-то непредвиденное случилось
-        res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+        res.status(500).json({ message: 'При загрузке проекта что-то пошло не так' })
     }
 })
-
-// router.get('/:id', auth, async (req, res) => {
-//     try {
-//         const project = await Project.findById(req.params.id)
-//         res.json(project)
-//     } catch(e) {
-//         //Если мы тут, что-то непредвиденное случилось
-//         res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
-//     }
-// })
 
 module.exports = router

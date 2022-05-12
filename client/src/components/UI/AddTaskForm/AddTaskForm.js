@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../hooks/useFetchData'
-import { controlTime, getDayNumber, getFormatTime, getNewActiveItem, getTimeNumber, stopTracking } from '../../../functions'
+import { controlTime, getDayNumber, getFormatTime, getTimeNumber} from '../../../functions'
 import ButtonForm from '../ButtonForm/ButtonForm'
 import Select from '../Select/Select'
 import './AddTaskForm.css'
-
+// Формы идентичны, сделать одним компонентом
 const AddTaskForm = ({ closeFormHandler }) => {
 
-    const { fetchNewTaskItem } = useFetchData()
+    const { fetchNewTaskItem, startTracking, stopTracking } = useFetchData()
 
     const { offset, selectedDate } = useSelector(state => state.app)
     const { projects, tasks, timesSheet, activeItem } = useSelector(state => state)
@@ -17,10 +17,12 @@ const AddTaskForm = ({ closeFormHandler }) => {
     const filtredTasks = tasks.filter(task => task.project === startProjectId)
     const startTaskId = filtredTasks[0] ? filtredTasks[0]._id : ''
 
-    const [currentProjectId, setCurrentProjectId] = useState(startProjectId)
-    const [currentTaskId, setCurrentTaskId] = useState(startTaskId)
-    const [description, setDescription] = useState('')
-    const [timeString, setTimeString] = useState('')
+    const [form, setForm] = useState({
+        projectId: startProjectId,
+        taskId: startTaskId,
+        description: '',
+        timeString: ''
+    })
    
     const getText = () => {
         return `Новая запись на ${selectedDate.day.toLowerCase()}, ${selectedDate.dayOfMonth} ${selectedDate.monthDayShort.toLowerCase()}`
@@ -41,7 +43,7 @@ const AddTaskForm = ({ closeFormHandler }) => {
                 }
             }),
             tasks: tasks
-                .filter(task => task.project === currentProjectId)  // Работаем только с задачами текущего проекта
+                .filter(task => task.project === form.projectId)  // Работаем только с задачами текущего проекта
                 .map( task => {
                     return {
                         id: task._id,
@@ -51,47 +53,47 @@ const AddTaskForm = ({ closeFormHandler }) => {
         }
     }
 
-    const changeHandler = (event, setState, control) => {
+    const changeHandler = (event, isSetTask, control, max) => {
         const newValue = event.target.value
         if (control && !control(newValue)) return
-        setState(newValue)
+        if (max && newValue.length > max) return
+        if (isSetTask) {
+            const filtredTasks = tasks.filter(task => task.project === newValue)
+            const newTaskId = filtredTasks[0] ? filtredTasks[0]._id : ''
+            setForm({...form, [event.target.name]: newValue, taskId: newTaskId })
+        } else {
+            setForm({...form, [event.target.name]: newValue})
+        }
     }
 
     const blurHandler = () => {
-        const timeNumber = getTimeNumber(timeString)
+        const timeNumber = getTimeNumber(form.timeString)
         const newTimeString = getFormatTime(timeNumber)
-        setTimeString(newTimeString)
+        setForm({...form, timeString: newTimeString})
     }
 
     const submitHandler = async event => {
         event.preventDefault()
-        const newItem = {
-            description: description,
-            projectId: currentProjectId,
-            projectName: projects.find(project => project._id === currentProjectId).name,
-            taskId: currentTaskId,
-            taskName: tasks.find(task => task._id === currentTaskId).name,
-            totalTime: getTimeNumber(timeString)
-        }
-        let dayItems = [ ...timesSheet.days[getDayNumber(offset)].items ]    // Из массива дней взяли текущий день, из него массив записей
-        dayItems = [ ...dayItems, newItem ]   // Положили новую запись
-        let newActiveItem = null
-        let deletedActiveItemId = null
-        if (!offset) {   //Если запись добавляют сегодня,
-            if (activeItem) {   // то если уже была активная
-                dayItems = stopTracking(dayItems, activeItem) // нужно ее разактивировать и переписать ее время, вернув новый массив
-                deletedActiveItemId = activeItem._id
+        try {
+            if (!offset) {  // Если запись добавляем сегодня, то она становится активной
+                if (activeItem) await stopTracking('addTaskItem: stopTracking') // Если уже была активная, останавливаем
+                const dayItems = timesSheet.days[getDayNumber(offset)].items    // Получили массив записей задач
+                await startTracking(dayItems.length, 'addTaskItem: startTracking')  // Добавляем активную запись
+            } 
+            const newItem = {   // Создаем шаблон новой записи
+                description: form.description,
+                projectId: form.projectId,
+                projectName: projects.find(project => project._id === form.projectId).name,
+                taskId: form.taskId,
+                taskName: tasks.find(task => task._id === form.taskId).name,
+                totalTime: getTimeNumber(form.timeString)
             }
-            const newItemIndex = dayItems.length - 1
-            newActiveItem = getNewActiveItem(newItemIndex)    // Создать новую активную запись
-            console.log('newActiveItem', newActiveItem)
+            // Отправляем ее в БД и ждем ответ
+            await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), newItem, 'AddTaskForm: fetchNewTaskItem')
+            closeFormHandler()  // Закрываем форму
+        } catch(e) {
+            console.log(e.message)
         }
-        let newDays = [ ...timesSheet.days ]  // Получили массив дней текущей недели для редактирования
-        newDays[getDayNumber(offset)].items = dayItems  // Заменили для выбранного дня поле items на созданный ранее массив dayItems
-        const newTimesSheet = { ...timesSheet, days: newDays }
-        // Все это не изменило данные, а только создало временное состояние, только после успешного ответа сервера состояние сохранится и можно изменить state в redux
-        await fetchNewTaskItem(activeItem, deletedActiveItemId, newActiveItem, newTimesSheet, 'AddTaskForm: fetchNewTaskItem')
-        closeFormHandler()  // Закрываем форму
     }
 
     return (
@@ -103,28 +105,32 @@ const AddTaskForm = ({ closeFormHandler }) => {
                 <form onSubmit={submitHandler} >
                     <Select
                         label='Проект'
-                        value={currentProjectId}
-                        onChange={e => changeHandler(e, setCurrentProjectId)}
-                        options={getOptions().projects}
+                        name='projectId'
+                        value={ form.projectId }
+                        onChange={ (e) => changeHandler(e, true) }
+                        options={ getOptions().projects }
                     />
                     <Select
                         label='Задача'
-                        value={currentTaskId}
-                        onChange={e => changeHandler(e, setCurrentTaskId)}
-                        options={getOptions().tasks}
+                        name='taskId'
+                        value={ form.taskId }
+                        onChange={ changeHandler }
+                        options={ getOptions().tasks }
                     />
-                    <input
+                    <textarea
                         className='description text'
                         placeholder='Примечания (необязательно)'
-                        value={description}
-                        onChange={(e) => changeHandler(e, setDescription)}
+                        name='description'
+                        value={ form.description }
+                        onChange={ (e) => changeHandler(e, false, null, 50) }
                     />
-                    <input
+                    <textarea
                         className='time text size-30'
                         placeholder='0:00'
-                        value={timeString}
-                        onChange={(e) => changeHandler(e, setTimeString, controlTime)}
-                        onBlur={blurHandler}
+                        name='timeString'
+                        value={ form.timeString }
+                        onChange={ (e) => changeHandler(e, false, controlTime) }
+                        onBlur={ blurHandler }
                     />
                     {
                         offset
