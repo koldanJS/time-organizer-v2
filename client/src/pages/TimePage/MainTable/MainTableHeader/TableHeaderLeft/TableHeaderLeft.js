@@ -79,10 +79,10 @@ const TableHeaderLeft = ({ content }) => {
     return (
         <div className='table-header-left' >
             <div className='left-right-btn arrow' >
-                <LeftRightBtn classList='text btn-left arrow' clickHandler={ () => clickHandler(-stepOffset) } >
+                <LeftRightBtn classList='btn-left arrow' clickHandler={ () => clickHandler(-stepOffset) } >
                     <img src={ images.arrowLeft } alt='Arrow' />
                 </LeftRightBtn>
-                <LeftRightBtn classList='text btn-right arrow' clickHandler={ () => clickHandler(stepOffset) } >
+                <LeftRightBtn classList='btn-right arrow' clickHandler={ () => clickHandler(stepOffset) } >
                     <img src={ images.arrowRight } alt='Arrow' />
                 </LeftRightBtn>
             </div>

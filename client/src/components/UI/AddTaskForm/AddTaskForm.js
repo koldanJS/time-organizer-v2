@@ -8,7 +8,7 @@ import './AddTaskForm.css'
 
 const AddTaskForm = ({ closeFormHandler }) => {
 
-    const { fetchNewTaskItem, loading } = useFetchData()
+    const { fetchNewTaskItem } = useFetchData()
 
     const { offset, selectedDate } = useSelector(state => state.app)
     const { projects, tasks, timesSheet, activeItem } = useSelector(state => state)
@@ -89,7 +89,6 @@ const AddTaskForm = ({ closeFormHandler }) => {
         let newDays = [ ...timesSheet.days ]  // Получили массив дней текущей недели для редактирования
         newDays[getDayNumber(offset)].items = dayItems  // Заменили для выбранного дня поле items на созданный ранее массив dayItems
         const newTimesSheet = { ...timesSheet, days: newDays }
-        console.log('newTimesSheet', newTimesSheet)
         // Все это не изменило данные, а только создало временное состояние, только после успешного ответа сервера состояние сохранится и можно изменить state в redux
         await fetchNewTaskItem(activeItem, deletedActiveItemId, newActiveItem, newTimesSheet, 'AddTaskForm: fetchNewTaskItem')
         closeFormHandler()  // Закрываем форму

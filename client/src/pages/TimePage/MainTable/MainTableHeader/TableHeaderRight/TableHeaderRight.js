@@ -30,8 +30,8 @@ const TableHeaderRight = ({ content }) => {
         }
     }
 
-    let classListLeft = 'text btn-left day'
-    let classListRight = 'text btn-right week'
+    let classListLeft = 'btn-left day'
+    let classListRight = 'btn-right week'
     if (content === 'day') classListLeft += ' active'
     if (content === 'week') classListRight += ' active'
 
@@ -43,13 +43,13 @@ const TableHeaderRight = ({ content }) => {
                     classList={ classListLeft }
                     clickHandler={ () => clickHandler('day') }
                 >
-                    День
+                    <p className='text' >День</p>
                 </LeftRightBtn>
                 <LeftRightBtn
                     classList={ classListRight }
                     clickHandler={ () => clickHandler('week') }
                 >
-                    Неделя
+                    <p className='text' >Неделя</p>
                 </LeftRightBtn>
             </div>
         </div>
