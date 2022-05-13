@@ -17,13 +17,13 @@ export const useMessage = () => {
         return <Message message={ message.message } type={ message.type } pageClass={ message.pageClass } />
     }
 
-    const setMessage = (message, type, pageClass) => {
+    const setMessageState = (message, type, pageClass) => {
         dispatch(setMessage({ message, type, pageClass }))
     }
 
     return {
         message,
-        setMessage,
+        setMessageState,
         showMessage
     }
 }

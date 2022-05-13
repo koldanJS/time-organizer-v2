@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../../../../hooks/useFetchData'
+import { useMessage } from '../../../../../../hooks/useMessage'
 import { getFormatTime } from '../../../../../../functions'
 import TaskForm from '../../../../../../components/UI/TaskForm/TaskForm'
 import Button from '../../../../../../components/UI/Button/Button'
@@ -11,6 +12,8 @@ import './TableItemRight.css'
 const TableItemRight = ({totalTime, isActive, index}) => {
 
     const { startTracking, stopTracking } = useFetchData()
+    const { setMessageState } = useMessage()
+
     const { activeItem } = useSelector(state => state)
     const { offset } = useSelector(state => state.app)
     const [isTaskForm, setIsTaskForm] = useState(false)
@@ -24,15 +27,15 @@ const TableItemRight = ({totalTime, isActive, index}) => {
 
     const stopHandler = async () => {
         await stopTracking('editTaskItem (stop): stopTracking') // Тогда останавливаем ее
+        setMessageState('Запись остановлена!', 'success', 'main-table-page')
     }
 
     const startHandler = async () => {
         if (offset) return
         if (activeItem) await stopTracking('editTaskItem (start - stop other): stopTracking') // Тогда останавливаем ее
         await startTracking(index, 'editTaskItem (start): startTracking')  //Устанавливает данную запись активной, если offset === 0
+        setMessageState('Запись запущена!', 'success', 'main-table-page')
     }
-
-
 
     return (
         <div className='table-item-right'>

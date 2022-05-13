@@ -7,12 +7,10 @@ import MainTableItems from './MainTableItems/MainTableItems'
 import TableTotal from './TableTotal/TableTotal'
 import TableWeek from './TableWeek/TableWeek'
 import './MainTable.css'
-import { useMessage } from '../../../hooks/useMessage'
 
 const MainTable = ({ content }) => {
 
     const { loading, fetchTimesSheet } = useFetchData()
-    const { message, setMessage, showMessage } = useMessage()
 
     const [update, setUpdate] = useState(new Date().getSeconds())
     const { activeItem } = useSelector(state => state)
@@ -34,7 +32,6 @@ const MainTable = ({ content }) => {
     return (
         <div className='main-table'>
             <MainTableHeader content={ content } />
-            <button onClick={() => setMessage('message', 'success', 'main-table-page')} >X</button>
             {
                 content === 'day'
                     ? <>

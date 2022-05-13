@@ -11,7 +11,8 @@
 .message.edit-user-page {
     width: 60%;
 }
-.message.main-table-page {
+.message.main-table-page,
+.message.archive-page {
     width: 380px;
 }
 .message p {

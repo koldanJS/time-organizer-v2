@@ -1,6 +1,8 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../../hooks/useFetchData'
+import { useMessage } from '../../../../hooks/useMessage'
 import { getAdditionTime, getDayNumber, getFormatTime, getRange, getTotalTime } from '../../../../functions'
 import Button from '../../../../components/UI/Button/Button'
 import './TableTotal.css'
@@ -8,12 +10,17 @@ import './TableTotal.css'
 const TableTotal = ({ content }) => {
 
     const { createArchive } = useFetchData()
+    const { setMessageState } = useMessage()
 
     const { offset, selectedWeek } = useSelector(state => state.app)
-    const { timesSheet, activeItem } = useSelector(state => state)
+    const { timesSheet, archive, activeItem } = useSelector(state => state)
 
-    let time = 0
-    if (timesSheet) time = getFormatTime(getTotalTime(timesSheet.days[getDayNumber(offset)]) + getAdditionTime(activeItem))
+    const location = useLocation()
+    let path = location.pathname.replace('/time/current/week', '')
+    path = path.replace('/', '')    // Если после week что-то было, осталась косая черта
+
+    let totalTime = 0
+    if (timesSheet) totalTime = getFormatTime(getTotalTime(timesSheet.days[getDayNumber(offset)]) + getAdditionTime(activeItem))
 
     const createArchiveHandler = async () => {
         const dateString = selectedWeek[0]
@@ -28,32 +35,50 @@ const TableTotal = ({ content }) => {
         if (!itemsLength) { //Если записей нет
             return alert('В этой неделе нечего архивировать')
         }
+        setMessageState('Отчет добавлен в архив!', 'success', 'main-table-page')
         try {
             await createArchive(dateString, `createArchive: ${dateString}`)
+
         } catch(e) {
             console.log(e.message)
         }
+    }
+
+    const getTimeWeekArray = () => {
+        // if (isLoading) return [0, 0, 0, 0, 0, 0, 0, 0]
+        // let { objItems, objTimes } = timesSheet?.week || {}   // Получили данные для отображения недельного формата
+        // if (path) {  //Если есть путь после week, значит отобразить соответствующую запись из архива
+        //     const archiveItem = archive.find(item => item.date === path)
+        //     objItems = archiveItem.week.objItems
+        //     objTimes = archiveItem.week.objTimes
+        // }
+        // if (!objItems || !Object.keys(objItems).length) return ( // Если длина массива записей 0
+        //     <li className='week-table-item'>
+        //         <EmptyItem text='Записи отсутствуют' />
+        //     </li>
+        // )
     }
 
     return (
         <div className='table-total'>
             {
                 content === 'day'
-                    ? <div className='total' >
+                    ? <>
+                        <div className='total' >
+                            <p className='text size-20 width-700' >Итого:</p>
+                            <p className='text size-20 width-700' >{ totalTime }</p>
+                        </div>
+                        <div className='submit-week' >
+                            <Button clickHandler={ createArchiveHandler } >
+                                <p className='text' >Архивировать недельный отчет</p>
+                            </Button>
+                        </div>
+                    </>
+                    : <div className='total' >
                         <p className='text size-20 width-700' >Итого:</p>
-                        <p className='text size-20 width-700' >{ time }</p>
+                        <p className='text size-20 width-700' >{ totalTime }</p>
                     </div>
-                    : null
             }
-            <div className='submit-week' >
-                {
-                    content === 'day'
-                        ? <Button clickHandler={ createArchiveHandler } >
-                            <p className='text' >Архивировать недельный отчет</p>
-                        </Button>
-                        : null
-                }
-            </div>
         </div>
     )
 }

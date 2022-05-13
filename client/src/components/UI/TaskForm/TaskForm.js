@@ -10,7 +10,7 @@ import './TaskForm.css'
 const TaskForm = ({ typeForm, closeFormHandler, index }) => {
 
     const { createTimesSheet, fetchNewTaskItem, startTracking, stopTracking } = useFetchData()
-    const { setMessage } = useMessage()
+    const { setMessageState } = useMessage()
 
     const { offset, selectedDate, selectedWeek } = useSelector(state => state.app)
     const { projects, tasks, timesSheet, activeItem } = useSelector(state => state)
@@ -73,8 +73,8 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
 
     const changeHandler = (event, isSetTask, control, max) => {
         const newValue = event.target.value
-        if (control && !control(newValue)) return setMessage({ message: 'Допустимый формат hh:mm!', type: 'error', pageClass: 'main-table-page' })
-        if (max && newValue.length > max) return setMessage({ message: `Максимальная длина ${max} символов!`, type: 'error', pageClass: 'main-table-page' })
+        if (control && !control(newValue)) return setMessageState('Допустимый формат hh:mm!', 'error', 'main-table-page')
+        if (max && newValue.length > max) return setMessageState(`Максимальная длина ${max} символов!`, 'error', 'main-table-page')
         if (isSetTask) {
             const filtredTasks = tasks.filter(task => task.project === newValue)
             const newTaskId = filtredTasks[0] ? filtredTasks[0]._id : ''
@@ -111,9 +111,11 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
                     await startTracking(dayItems.length, 'addTaskItem: startTracking')  // Добавляем активную запись
                 } 
                 await fetchNewTaskItem(editTimesSheet._id, getDayNumber(offset), newItem, 'AddTaskForm: fetchNewTaskItem')
+                setMessageState('Запись добавлена!', 'success', 'main-table-page')
             }
             if (typeForm === 'edit') {
                 await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), newItem, 'EditTaskForm (edit): fetchNewTaskItem', index)
+                setMessageState('Запись отредактирована!', 'success', 'main-table-page')
             }
             closeFormHandler()  // Закрываем форму
         } catch(e) {
@@ -124,6 +126,7 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
     const deleteHandler = async () => {
         try {
             await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), null, 'EditTaskForm (edit): fetchNewTaskItem', index, true)
+            setMessageState('Запись удалена!', 'success', 'main-table-page')
             closeFormHandler()
         } catch(e) {
             console.log(e.message)
