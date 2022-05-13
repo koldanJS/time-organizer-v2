@@ -1,28 +1,44 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { controlTime, getDayNumber, getFormatTime, getTimeNumber } from '../../../functions'
 import { useFetchData } from '../../../hooks/useFetchData'
+import { controlTime, getDayNumber, getFormatTime, getTimeNumber} from '../../../functions'
 import ButtonForm from '../ButtonForm/ButtonForm'
 import Select from '../Select/Select'
-import './EditTaskForm.css'
-// Формы идентичны, сделать одним компонентом
-const EditTaskForm = ({ closeFormHandler, index }) => {
+import './TaskForm.css'
 
-    const { fetchNewTaskItem } = useFetchData()
+const TaskForm = ({ typeForm, closeFormHandler, index }) => {
+
+    const { fetchNewTaskItem, startTracking, stopTracking } = useFetchData()
 
     const { offset, selectedDate } = useSelector(state => state.app)
-    const { projects, tasks, timesSheet } = useSelector(state => state)
-
-    const currentDay = timesSheet.days[getDayNumber(offset)] // Текущий день
-    const [form, setForm] = useState({
-        projectId: currentDay.items[index].projectId,
-        taskId: currentDay.items[index].taskId,
-        description: currentDay.items[index].description,
-        timeString: getFormatTime(currentDay.items[index].totalTime)
-    })
+    const { projects, tasks, timesSheet, activeItem } = useSelector(state => state)
+    
+    const getStartState = (typeForm) => {
+        if (typeForm === 'edit') {
+            const currentDay = timesSheet.days[getDayNumber(offset)] // Текущий день
+            return {
+                projectId: currentDay.items[index].projectId,
+                taskId: currentDay.items[index].taskId,
+                description: currentDay.items[index].description,
+                timeString: getFormatTime(currentDay.items[index].totalTime)
+            }
+        }
+        if (typeForm === 'add') {
+            const startProjectId = projects[0] ? projects[0]._id : ''
+            const filtredTasks = tasks.filter(task => task.project === startProjectId)
+            const startTaskId = filtredTasks[0] ? filtredTasks[0]._id : ''
+            return {
+                projectId: startProjectId,
+                taskId: startTaskId,
+                description: '',
+                timeString: ''
+            }
+        }
+    }
+    const [form, setForm] = useState(getStartState(typeForm))
    
     const getText = () => {
-        return `Редактировать запись на ${selectedDate.day.toLowerCase()}, ${selectedDate.dayOfMonth} ${selectedDate.monthDayShort.toLowerCase()}`
+        return `${typeForm === 'add' ? 'Новая ' : 'Редактировать'} запись на ${selectedDate.day.toLowerCase()}, ${selectedDate.dayOfMonth} ${selectedDate.monthDayShort.toLowerCase()}`
     }
 
     const getTextItem = (name, /*keyName, client*/) => {    // keyName, client на будущее
@@ -71,7 +87,7 @@ const EditTaskForm = ({ closeFormHandler, index }) => {
 
     const submitHandler = async event => {
         event.preventDefault()
-        const editItem = {  // Создаем редактированную запись
+        const newItem = {   // Создаем новую/редактированную запись
             description: form.description,
             projectId: form.projectId,
             projectName: projects.find(project => project._id === form.projectId).name,
@@ -79,10 +95,20 @@ const EditTaskForm = ({ closeFormHandler, index }) => {
             taskName: tasks.find(task => task._id === form.taskId).name,
             totalTime: getTimeNumber(form.timeString)
         }
+        // Отправляем ее в БД и ждем ответ
         try {
-            // Отправляем ее в БД и ждем ответ
-            await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), editItem, 'EditTaskForm (edit): fetchNewTaskItem', index)
-            closeFormHandler()
+            if (typeForm === 'add') {
+                if (!offset) {  // Если запись добавляем сегодня, то она становится активной
+                    if (activeItem) await stopTracking('addTaskItem: stopTracking') // Если уже была активная, останавливаем
+                    const dayItems = timesSheet.days[getDayNumber(offset)].items    // Получили массив записей задач
+                    await startTracking(dayItems.length, 'addTaskItem: startTracking')  // Добавляем активную запись
+                } 
+                await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), newItem, 'AddTaskForm: fetchNewTaskItem')
+            }
+            if (typeForm === 'edit') {
+                await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), newItem, 'EditTaskForm (edit): fetchNewTaskItem', index)
+            }
+            closeFormHandler()  // Закрываем форму
         } catch(e) {
             console.log(e.message)
         }
@@ -99,11 +125,11 @@ const EditTaskForm = ({ closeFormHandler, index }) => {
 
     return (
         <div className='hide-all' >
-            <div className='add-task-form'>
+            <div className='task-form'>
                 <div className='head' >
                     <p className='text' >{ getText() }</p>
                 </div>
-                <form onSubmit={submitHandler} >
+                <form onSubmit={ submitHandler } >
                     <Select
                         label='Проект'
                         name='projectId'
@@ -133,29 +159,33 @@ const EditTaskForm = ({ closeFormHandler, index }) => {
                         onChange={ (e) => changeHandler(e, false, controlTime) }
                         onBlur={ blurHandler }
                     />
-                    <ButtonForm
-                        classType='success'
-                        type='submit'
-                    >
-                        <p className='text color-white' >Редактировать запись</p>
+                    <ButtonForm classType='success' type='submit' >
+                        <p className='text color-white' >
+                            {(typeForm === 'edit')
+                                ? 'Редактировать запись'
+                                : offset
+                                    ? 'Добавить запись'
+                                    : 'Запустить таймер'
+                            }
+                        </p>
                     </ButtonForm>
-                    <ButtonForm
-                        type='button'
-                        clickHandler={closeFormHandler}
-                    >
+                    <ButtonForm type='button' clickHandler={ closeFormHandler } >
                         <p className='text' >Отмена</p>
                     </ButtonForm>
-                    <ButtonForm
-                        classType='delete'
-                        type='button'
-                        clickHandler={deleteHandler}
-                    >
-                        <p className='text' >Удалить</p>
-                    </ButtonForm>
+                    {(typeForm === 'edit')
+                        ? <ButtonForm
+                            classType='delete'
+                            type='button'
+                            clickHandler={deleteHandler}
+                        >
+                            <p className='text' >Удалить</p>
+                        </ButtonForm>
+                        : null
+                    }
                 </form>
             </div>
         </div>
     )
 }
 
-export default EditTaskForm
+export default TaskForm
