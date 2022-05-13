@@ -13,10 +13,11 @@ const TableHeaderLeft = ({ content }) => {
     const { offset, selectedDate } = useSelector(state => state.app)
     const location = useLocation()
     const navigate = useNavigate()
-    const path = location.pathname.replace('/time/current/week/', '')
+    const path = location.pathname.replace('/time/current/week', '')
     let stepOffset = (content === 'week') ? 7 : 1
 
     const clickHandler = (offset) => {
+        if (path && content === 'week') navigate('/time/current/week')
         dispatch(changeOffset(offset))
     }
 
@@ -26,7 +27,7 @@ const TableHeaderLeft = ({ content }) => {
                 className='text return-link'
                 onClick={() => {
                     dispatch(setOffset(0))
-                    // if (path) navigate('/time/current/week')
+                    if (path && content === 'week') navigate('/time/current/week')
                 }}
             >
                 { content === 'day' ? 'Вернуться к сегодня' : 'К текущей неделе'}

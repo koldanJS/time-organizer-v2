@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../hooks/useFetchData'
+import { useMessage } from '../../../hooks/useMessage'
 import { controlTime, getDayNumber, getFormatTime, getTimeNumber} from '../../../functions'
 import ButtonForm from '../ButtonForm/ButtonForm'
 import Select from '../Select/Select'
@@ -9,6 +10,7 @@ import './TaskForm.css'
 const TaskForm = ({ typeForm, closeFormHandler, index }) => {
 
     const { createTimesSheet, fetchNewTaskItem, startTracking, stopTracking } = useFetchData()
+    const { setMessage } = useMessage()
 
     const { offset, selectedDate, selectedWeek } = useSelector(state => state.app)
     const { projects, tasks, timesSheet, activeItem } = useSelector(state => state)
@@ -36,7 +38,10 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
         }
     }
     const [form, setForm] = useState(getStartState(typeForm))
-   
+    const isDisabled = !tasks.find(task => task._id === form.taskId) /* Проверка, что выбрана существующая задача, т.к. задачи и проекты м.б. удалены,
+    а проверка задачи достаточна и для проектов. Если удалены проект/задача, кнопка будет отключена, пока их не сменить, хотя без изменений удаленные
+    проект и задача по прежнему будут корректно отображаться и их даже можно архивировать */
+
     const getText = () => {
         return `${typeForm === 'add' ? 'Новая ' : 'Редактировать'} запись на ${selectedDate.day.toLowerCase()}, ${selectedDate.dayOfMonth} ${selectedDate.monthDayShort.toLowerCase()}`
     }
@@ -68,8 +73,8 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
 
     const changeHandler = (event, isSetTask, control, max) => {
         const newValue = event.target.value
-        if (control && !control(newValue)) return
-        if (max && newValue.length > max) return
+        if (control && !control(newValue)) return setMessage({ message: 'Допустимый формат hh:mm!', type: 'error', pageClass: 'main-table-page' })
+        if (max && newValue.length > max) return setMessage({ message: `Максимальная длина ${max} символов!`, type: 'error', pageClass: 'main-table-page' })
         if (isSetTask) {
             const filtredTasks = tasks.filter(task => task.project === newValue)
             const newTaskId = filtredTasks[0] ? filtredTasks[0]._id : ''
@@ -161,7 +166,7 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
                         onChange={ (e) => changeHandler(e, false, controlTime) }
                         onBlur={ blurHandler }
                     />
-                    <ButtonForm classType='success' type='submit' >
+                    <ButtonForm classType='success' type='submit' disabled={ isDisabled } >
                         <p className='text color-white' >
                             {(typeForm === 'edit')
                                 ? 'Редактировать запись'

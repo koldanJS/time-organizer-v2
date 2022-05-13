@@ -1,4 +1,4 @@
-import { CHANGE_OFFSET, SET_OFFSET } from '../types/appTypes'
+import { CHANGE_OFFSET, SET_OFFSET, SET_MESSAGE } from '../types/appTypes'
 
 export const changeOffset = (step) => ({
     type: CHANGE_OFFSET,
@@ -8,4 +8,9 @@ export const changeOffset = (step) => ({
 export const setOffset = (offset) => ({
     type: SET_OFFSET,
     payload: offset
+})
+
+export const setMessage = (message) => ({
+    type: SET_MESSAGE,
+    payload: message
 })

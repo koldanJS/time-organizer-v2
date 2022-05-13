@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { getDateString, msPerDay } from '../../../../../functions'
 import { setOffset } from '../../../../../redux/actions/appActions'
@@ -10,13 +10,14 @@ const TableHeaderRight = ({ content }) => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation()
+    const path = location.pathname.replace('/time/current/week', '')
 
     const changeCalendarHandler = (event) => {
-        console.log('calendar', event.target.value)
+        if (path && content === 'week') navigate('/time/current/week')
         const now = new Date(getDateString(0)) //милисекунды на сегодня в 00:00
         const selectedDate = new Date(event.target.value) //милисекунды на выбранный день в 00:00
         const newOffset = Math.round((selectedDate - now)/msPerDay) //Смещение в днях
-        console.log('newOffset', newOffset)
         dispatch(setOffset(newOffset))
     }
 

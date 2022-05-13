@@ -1,7 +1,29 @@
-import { useCallback } from 'react'
+import Message from '../components/UI/Message/Message'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setMessage } from '../redux/actions/appActions'
 
 export const useMessage = () => {
-    return useCallback(text => {
-        if (text) alert(text)
-    }, [])
+
+    // const [message, setMessage] = useState(null)
+    const dispatch = useDispatch()
+    const { message } = useSelector(state => state.app)
+
+    const showMessage = () => {
+        setTimeout(() => {
+            // setMessage(null)
+            dispatch(setMessage(null))
+        }, 3000)
+        return <Message message={ message.message } type={ message.type } pageClass={ message.pageClass } />
+    }
+
+    const setMessage = (message, type, pageClass) => {
+        dispatch(setMessage({ message, type, pageClass }))
+    }
+
+    return {
+        message,
+        setMessage,
+        showMessage
+    }
 }

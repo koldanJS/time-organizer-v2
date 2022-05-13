@@ -1,108 +1,62 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { getDate, getRange } from '../../../../functions'
+import { setOffset } from '../../../../redux/actions/appActions'
+import { getDate, getOffset, getRange } from '../../../../functions'
 import './TableWeek.css'
+import EmptyItem from '../MainTableItems/EmptyItem/EmptyItem'
 
-const TableWeek = () => {
+const TableWeek = ({ isLoading }) => {
 
+    const dispatch = useDispatch()
     const { offset } = useSelector(state => state.app)
+    const { timesSheet, archive } = useSelector(state => state)
     const location = useLocation()
     let path = location.pathname.replace('/time/current/week', '')
-    if (path) path = path.replace('/', '')
+    path = path.replace('/', '')    // Если после week что-то было, осталась косая черта
 
-    // useEffect(() => {
-    //     if (path) {  //Если есть путь после week
-    //         const dayStartString = path.split('_')[0] //Получили строку первого дня выбранной недели
-    //         const currentOffset = getOffset(dayStartString)
-    //         dispatch(setOffset(currentOffset))
-    //     }
-    // }, [path])
-
-    const getTable = () => {
-        // const selectedWeek = getSelectedWeek(offset)
-
-        // const tableItems = {}
-        // const timesSheets = user.timesSheets
-        // const currentTimesSheets = {}
-        // selectedWeek.forEach(dateString => {   //Получаем все временные таблицы архивируемой недели
-        //     if (timesSheets[dateString]) {
-        //         currentTimesSheets[dateString] = timesSheets[dateString]
-        //     }
-        // })
-
-        // Object.keys(currentTimesSheets).forEach(dateString => {
-        //     const arrItems = currentTimesSheets[dateString]
-        //     for (const item of arrItems) {
-        //         const key = item.projectId + item.taskId
-        //         const newItem = {...tableItems[key]}
-        //         newItem.projectName = projects[item.projectId].projectName
-        //         newItem.taskName = tasks[item.taskId].taskName
-        //         newItem[dateString] = (newItem[dateString] || 0) + item.totalTime
-        //         tableItems[key] = {...tableItems[key], ...newItem}
-        //     }
-        // })
-
-        // let arrOfTableItems = Object.values(tableItems)
-        // console.log('arrOfTableItems', arrOfTableItems)
-
-        // return arrOfTableItems
-    }
+    useEffect(() => {
+        if (path) {  //Если есть путь после week, установить offset выбранной недели
+            const currentOffset = getOffset(path)
+            dispatch(setOffset(currentOffset))
+        }
+    }, [path])
 
     const getEntry = () => {
-        // if (path) {  //Если есть путь после week, значит отобразить соответствующую запись из архива
-        //     const archive = user.archive[path]
-        //     const selectedWeek = getSelectedWeek(offset)
-        //     return archive.map((entry, index) => {
-        //         return (
-        //             <li className='week-table-item' key={ index } >
-        //                 <ul className='days'>
-        //                     <li className='name'>
-        //                         <p className='text width-700' >{ entry.projectName }</p>
-        //                         <p className='text' >{ entry.taskName }</p>
-        //                     </li>
-        //                     {
-        //                         selectedWeek.map((timeString, index) => {
-        //                             if (timeString === null) return
-        //                             return <li className='text' key={ timeString }>
-        //                                 { entry[selectedWeek[index]] || 0 }
-        //                             </li>
-        //                         })
-        //                     }
-        //                 </ul>
-        //                 <hr className='demiliter' />
-        //             </li>
-        //         )
-        //     })
-        // }
-        // const arrOfTableItems = getTable()
-        // if (arrOfTableItems.length === 0) return (
-        //     <li className='week-table-item'>
-        //         <p className='text empty-item' >Записи отсутствуют</p>
-        //     </li>
-        // )
-        // const selectedWeek = getSelectedWeek(offset)
-        //     return arrOfTableItems.map((entry, index) => {
-        //         return (
-        //             <li className='week-table-item' key={ index } >
-        //                 <ul className='days'>
-        //                     <li className='name'>
-        //                         <p className='text width-700' >{ entry.projectName }</p>
-        //                         <p className='text' >{ entry.taskName }</p>
-        //                     </li>
-        //                     {
-        //                         selectedWeek.map((timeString, index) => {
-        //                             if (timeString === null) return
-        //                             return <li className='text' key={ timeString }>
-        //                                 { entry[selectedWeek[index]] || 0 }
-        //                             </li>
-        //                         })
-        //                     }
-        //                 </ul>
-        //                 <hr className='demiliter' />
-        //             </li>
-        //         )
-        //     })
+        if (isLoading) return <li className='week-table-item'>
+            <EmptyItem isLoading={true} />
+        </li>
+        let { objItems, objTimes } = timesSheet?.week || {}   // Получили данные для отображения недельного формата
+        if (path) {  //Если есть путь после week, значит отобразить соответствующую запись из архива
+            const archiveItem = archive.find(item => item.date === path)
+            objItems = archiveItem.week.objItems
+            objTimes = archiveItem.week.objTimes
+        }
+        if (!objItems || !Object.keys(objItems).length) return ( // Если длина массива записей 0
+            <li className='week-table-item'>
+                <EmptyItem text='Записи отсутствуют' />
+            </li>
+        )
+        return Object.keys(objItems).map((stringName, index) => {
+            return (
+                <li className='week-table-item' key={ index } >
+                    <ul className='days'>
+                        <li className='name'>
+                            <p className='text width-700' >{ stringName.split('____')[0] }</p>
+                            <p className='text' >{ stringName.split('____')[1] }</p>
+                        </li>
+                        {
+                            ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', ].map((dayString, index) => {
+                                return <li className='text' key={ dayString }>
+                                    { objItems[stringName][dayString] || 0 }
+                                </li>
+                            })
+                        }
+                    </ul>
+                    <hr className='demiliter' />
+                </li>
+            )
+        })
     }
 
     const getDays = () => {

@@ -2,7 +2,7 @@ import React from 'react'
 import Loader from '../../../../../components/Loader/Loader'
 import './EmptyItem.css'
 
-const EmptyItem = ({isLoading = false}) => {
+const EmptyItem = ({ isLoading = false, text = 'Добавляйте новые задачи и они появятся здесь!' }) => {
 
 
 
@@ -11,7 +11,7 @@ const EmptyItem = ({isLoading = false}) => {
             {
                 isLoading
                     ? <Loader />
-                    : <p className='text size-22'>Добавляйте новые задачи и они появятся здесь!</p>
+                    : <p className='text size-22'>{ text }</p>
             }
         </div>
     )

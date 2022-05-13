@@ -254,6 +254,23 @@ export const useFetchData = () => {
         }
     }, [token, request])
 
+    const deleteArchive = useCallback(async (id, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const archive = await request(
+                '/api/archive/delete',
+                'DELETE',
+                { id },
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getArchive(archive))
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
     return {
         isLoad,
         loading,
@@ -267,6 +284,7 @@ export const useFetchData = () => {
         stopTracking,
         createTimesSheet,
         fetchTimesSheet,
-        createArchive
+        createArchive,
+        deleteArchive
     }
 }
