@@ -1,6 +1,6 @@
 import { GET_ACTIVE_ITEM } from "../types/activeItemTypes"
 
-const initialState = {}
+const initialState = null
 
 const activeItemReducers = (state = initialState, action) => {
     switch(action.type) {

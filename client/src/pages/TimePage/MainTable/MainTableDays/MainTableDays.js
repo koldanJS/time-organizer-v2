@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeOffset } from '../../../../redux/actions/appActions'
-import { getFormatTime, getRange, getTotalTime } from '../../../../functions'
+import { getAdditionTime, getFormatTime, getRange, getTotalTime } from '../../../../functions'
 import DayItem from './DayItem/DayItem'
 import DayTotal from './DayTotal/DayTotal'
 import './MainTableDays.css'
@@ -10,15 +10,23 @@ const MainTableDays = () => {
 
     const dispatch = useDispatch()
     const { offset, selectedDate, selectedWeek } = useSelector(state => state.app)
-    const { timesSheet } = useSelector(state => state)
+    const { timesSheet, activeItem } = useSelector(state => state)
 
     const getDayItems = () => {     //isTimeOn чтоб появлялись часики
-        // const offsetMin = getRange(offset)[0]   //Получить смещение для понедельника, относительно текущего дня
+        if (!timesSheet) return ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((day, index) => {
+            return {
+                isActive: selectedDate.dayNumber === index,
+                day,
+                totalTime: 0
+            }
+        })
         return timesSheet.days.map((day, index) => {
+            let additionTime = 0    // Расчитываем добавочное время, если в дне есть активная запись
+            if (!offset && activeItem && activeItem.dayNumber === index) additionTime = getAdditionTime(activeItem)
             return {
                 isActive: selectedDate.dayNumber === index,
                 day: day.shortDay,
-                totalTime: getTotalTime(day) //+ getAddition( user, selectedWeek, getDateString(offset + offsetMin + index) )
+                totalTime: getTotalTime(day) + additionTime
             }
         })
     }

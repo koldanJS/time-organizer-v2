@@ -12,8 +12,8 @@ app.use('/api/user', require('./routes/user.routes'))
 app.use('/api/project', require('./routes/project.routes'))
 app.use('/api/task', require('./routes/task.routes'))
 app.use('/api/timesSheet', require('./routes/timesSheet.routes'))
+app.use('/api/archive', require('./routes/archive.routes'))
 app.use('/api/activeItem', require('./routes/activeItem.routes'))
-app.use('/t', require('./routes/redirect.routes'))
 
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/client/build')))

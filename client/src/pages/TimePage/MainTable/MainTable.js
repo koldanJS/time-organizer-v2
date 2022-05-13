@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useFetchData } from '../../../hooks/useFetchData'
 import MainTableHeader from './MainTableHeader/MainTableHeader'
 import MainTableDays from './MainTableDays/MainTableDays'
 import MainTableItems from './MainTableItems/MainTableItems'
@@ -9,10 +10,12 @@ import './MainTable.css'
 
 const MainTable = ({ content }) => {
 
-    // Заставляем этот корневой компонент рендериться 2 раза в минуту, если есть активная задача
+    const { loading, fetchTimesSheet } = useFetchData()
+
     const [update, setUpdate] = useState(new Date().getSeconds())
     const { activeItem } = useSelector(state => state)
-
+    const { selectedWeek } = useSelector(state => state.app)
+    // Заставляем этот корневой компонент рендериться 2 раза в минуту, если есть активная задача
     useEffect(() => {
         console.log('MainTable: render')
         if (activeItem) {
@@ -21,6 +24,10 @@ const MainTable = ({ content }) => {
               }, 30000);
         }
       }, [activeItem, update])
+    // Заставляем этот корневой компонент запрашивать новую неделю при ее изменении
+    useEffect(() => {
+        fetchTimesSheet(selectedWeek[0], 'MainTable: fetch TimesSheet')
+    }, [selectedWeek[0]])
 
     return (
         <div className='main-table'>
@@ -30,7 +37,7 @@ const MainTable = ({ content }) => {
                     ? <>
                         <MainTableDays />
                         <hr className='demiliter' />
-                        <MainTableItems />
+                        <MainTableItems isLoading={ loading } />
                     </>
                     : <TableWeek />
             }

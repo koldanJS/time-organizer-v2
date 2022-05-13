@@ -5,6 +5,7 @@ import userReducers from './reducers/userReducers'
 import projectReducers from './reducers/projectReducers'
 import taskReducers from './reducers/taskReducers'
 import timesSheetReducers from './reducers/timesSheetReducers'
+import archiveReducers from './reducers/archiveReducers'
 import activeItemReducers from './reducers/activeItemReducers'
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     projects: projectReducers,
     tasks: taskReducers,
     timesSheet: timesSheetReducers,
+    archive: archiveReducers,
     activeItem: activeItemReducers
 })
 

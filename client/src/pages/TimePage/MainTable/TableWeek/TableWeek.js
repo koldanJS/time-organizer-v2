@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-// import { getDate, getOffset, getRange, getSelectedWeek, useSimpledStore } from '../../../../../functions/functions'
-// import { setOffset } from '../../../../../redux/actions/appStateActions/timeStateActions'
+import { getDate, getRange } from '../../../../functions'
 import './TableWeek.css'
 
 const TableWeek = () => {
 
-    const { user, projects, tasks, offset, isLoading, dispatch } = {} //useSimpledStore()
+    const { offset } = useSelector(state => state.app)
     const location = useLocation()
     let path = location.pathname.replace('/time/current/week', '')
     if (path) path = path.replace('/', '')
@@ -106,37 +106,35 @@ const TableWeek = () => {
     }
 
     const getDays = () => {
-        // const weekRange = getRange(offset)  //Диапазон смещений для [Пн, Вс] в выбранной неделе
-        // const offsetRange = [weekRange[0] + offset, weekRange[1] + offset]  //Диапазон смещений для [Пн, Вс] относительно сегодня
+        const weekRange = getRange(offset)  //Диапазон смещений для [Пн, Вс] в выбранной неделе
+        const offsetRange = [weekRange[0] + offset, weekRange[1] + offset]  //Диапазон смещений для [Пн, Вс] относительно сегодня
 
-        // let arrDays = []
-        // for (let i = offsetRange[0]; i <= offsetRange[1]; i++) {
-        //     arrDays.push(getDate(i))
-        // }
+        let arrDays = []
+        for (let i = offsetRange[0]; i <= offsetRange[1]; i++) {
+            arrDays.push(getDate(i))
+        }
 
-        // return arrDays.map(date => {
-        //     return (
-        //         <li key={ date.dayShort } >
-        //             <p>{ date.dayShort + ',' }</p>
-        //             <p>{ date.dayOfMonth + ' ' + date.monthDayShort }</p>
-        //         </li>
-        //     )
-        // })
+        return arrDays.map(date => {
+            return (
+                <li key={ date.dayShort } >
+                    <p>{ date.dayShort + ',' }</p>
+                    <p>{ date.dayOfMonth + ' ' + date.monthDayShort }</p>
+                </li>
+            )
+        })
     }
 
     return (
-        // isLoading
-        //     ? null
-            <div className='week-table'>
-                <h1 className='text size-30 width-700 header' >Недельный отчет</h1>
-                <ul className='text head-item days'>
-                    <li className='name'>Проект / Задача</li>
-                    { getDays() }
-                </ul>
-                <ul>
-                    { getEntry() }
-                </ul>
-            </div>
+        <div className='week-table'>
+            <h1 className='text size-30 width-700 header' >Недельный отчет</h1>
+            <ul className='text head-item days'>
+                <li className='name'>Проект / Задача</li>
+                { getDays() }
+            </ul>
+            <ul>
+                { getEntry() }
+            </ul>
+        </div>
     )
 }
 

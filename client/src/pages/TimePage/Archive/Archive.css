@@ -22,6 +22,7 @@
 }
 .archive .archive-item {
     padding: 10px 0;
+    padding-left: 10px;
     margin: 10px 0;
 }
 .archive .archive-item button {

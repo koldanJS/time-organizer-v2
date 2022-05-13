@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
-import { getSelectedWeek } from '../functions'
+import { useDispatch, useSelector } from 'react-redux'
 import { getAuthState } from '../redux/actions/authActions'
 import { getProjects } from '../redux/actions/projectActions'
 import { getTasks } from '../redux/actions/taskActions'
 import { getTimesSheet } from '../redux/actions/timesSheetActions'
+import { getArchive } from '../redux/actions/archiveActions'
 import { getActiveItem } from '../redux/actions/activeItemActions'
 import { getUser } from '../redux/actions/userActions'
 import { useAuth } from './useAuth'
@@ -14,6 +14,7 @@ export const useFetchData = () => {
     const { request, loading } = useHttp()
     const { token, userId, ready, logout } = useAuth()
     const dispatch = useDispatch()
+    const { selectedWeek } = useSelector(state => state.app)
     //Создаем состояние в хуке
     const [isLoad, setIsLoad] = useState(false)
     //Эта ф/я будет делать все http запросы на все данные разом
@@ -40,7 +41,13 @@ export const useFetchData = () => {
                 { Authorization: `Bearer ${token}` }
             )
             const timesSheet = await request(
-                `/api/timesSheet/${getSelectedWeek(0)[0]}`,   // Строка с датой Пн, выбранной недели
+                `/api/timesSheet/${selectedWeek[0]}`,   // Строка с датой Пн, выбранной недели
+                'GET',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            const archive = await request(
+                '/api/archive',
                 'GET',
                 null,
                 { Authorization: `Bearer ${token}` }
@@ -57,6 +64,7 @@ export const useFetchData = () => {
             dispatch(getProjects(projects))
             dispatch(getTasks(tasks))
             dispatch(getTimesSheet(timesSheet))
+            dispatch(getArchive(archive))
             dispatch(getActiveItem(activeItem))
             setIsLoad(true) // Показывает что произошла загрузка данных
         } catch(e) {
@@ -193,5 +201,72 @@ export const useFetchData = () => {
         }
     }, [token, request])
 
-    return { isLoad, loading, fetchData, fetchProjectData, createProject, editProject, deleteProject, fetchNewTaskItem, startTracking, stopTracking }
+    const createTimesSheet = useCallback(async (dateString, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const timesSheet = await request(
+                `/api/timesSheet/create/${dateString}`,   // Строка с датой Пн, выбранной недели
+                'POST',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getTimesSheet(timesSheet))
+            return timesSheet
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const fetchTimesSheet = useCallback(async (dateString, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const timesSheet = await request(
+                `/api/timesSheet/${dateString}`,   // Строка с датой Пн, выбранной недели
+                'GET',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getTimesSheet(timesSheet))
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    const createArchive = useCallback(async (dateString, logString) => {
+        if (!ready) return
+        console.log(logString)
+        try {
+            const archive = await request(
+                `/api/archive/create/${dateString}`,
+                'POST',
+                null,
+                { Authorization: `Bearer ${token}` }
+            )
+            dispatch(getArchive(archive))
+            dispatch(getTimesSheet(null))
+        } catch(e) {
+            if (e.message === 'Нет авторизации') logout()
+            console.log(e.message)
+        }
+    }, [token, request])
+
+    return {
+        isLoad,
+        loading,
+        fetchData,
+        fetchProjectData,
+        createProject,
+        editProject,
+        deleteProject,
+        fetchNewTaskItem,
+        startTracking,
+        stopTracking,
+        createTimesSheet,
+        fetchTimesSheet,
+        createArchive
+    }
 }

@@ -8,9 +8,9 @@ import './TaskForm.css'
 
 const TaskForm = ({ typeForm, closeFormHandler, index }) => {
 
-    const { fetchNewTaskItem, startTracking, stopTracking } = useFetchData()
+    const { createTimesSheet, fetchNewTaskItem, startTracking, stopTracking } = useFetchData()
 
-    const { offset, selectedDate } = useSelector(state => state.app)
+    const { offset, selectedDate, selectedWeek } = useSelector(state => state.app)
     const { projects, tasks, timesSheet, activeItem } = useSelector(state => state)
     
     const getStartState = (typeForm) => {
@@ -98,12 +98,14 @@ const TaskForm = ({ typeForm, closeFormHandler, index }) => {
         // Отправляем ее в БД и ждем ответ
         try {
             if (typeForm === 'add') {
+                let editTimesSheet = timesSheet   // Таблица может отсутствовать, если ее еще не создавали
+                if (!timesSheet) editTimesSheet = await createTimesSheet(selectedWeek[0], 'TaskForm :createTimesSheet')
                 if (!offset) {  // Если запись добавляем сегодня, то она становится активной
                     if (activeItem) await stopTracking('addTaskItem: stopTracking') // Если уже была активная, останавливаем
-                    const dayItems = timesSheet.days[getDayNumber(offset)].items    // Получили массив записей задач
+                    const dayItems = editTimesSheet.days[getDayNumber(offset)].items    // Получили массив записей задач
                     await startTracking(dayItems.length, 'addTaskItem: startTracking')  // Добавляем активную запись
                 } 
-                await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), newItem, 'AddTaskForm: fetchNewTaskItem')
+                await fetchNewTaskItem(editTimesSheet._id, getDayNumber(offset), newItem, 'AddTaskForm: fetchNewTaskItem')
             }
             if (typeForm === 'edit') {
                 await fetchNewTaskItem(timesSheet._id, getDayNumber(offset), newItem, 'EditTaskForm (edit): fetchNewTaskItem', index)

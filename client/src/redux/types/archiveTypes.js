@@ -1,0 +1,1 @@
+export const GET_ARCHIVE = 'ARCHIVE/GET_ARCHIVE'
