@@ -35,14 +35,15 @@ const TableTotal = ({ content }) => {
         const dateString = selectedWeek[0]
         const weekRange = getRange(offset)  //Диапазон смещений для [Пн, Вс] в выбранной неделе
         const offsetRange = [weekRange[0] + offset, weekRange[1] + offset]  //Диапазон смещений для [Пн, Вс] относительно сегодня
-        if (activeItem && ((offsetRange[0] <= 0) && (offsetRange[1] >= 0))) { //Если активная запись входит в архивируемую неделю
-            return alert('У вас еще есть активные задачи')
+        if (activeItem) { //Если активная запись входит в архивируемую неделю
+            const activeDateString = getDateString(0, activeItem.startTime)
+            if (selectedWeek.includes(activeDateString)) return setMessageState('У вас еще есть активные задачи!', 'error', 'main-table-page')
         }
         const itemsLength = timesSheet.days.reduce((totalLength, day) => {  // Находим количество записей в неделе
             return totalLength += day.items.length
         }, 0)
         if (!itemsLength) { //Если записей нет
-            return alert('В этой неделе нечего архивировать')
+            return setMessageState('В этой неделе нечего архивировать!', 'error', 'main-table-page')
         }
         setMessageState('Отчет добавлен в архив!', 'success', 'main-table-page')
         try {
