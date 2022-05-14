@@ -1,15 +1,27 @@
 {
   "files": {
-    "main.css": "/static/css/main.2624deeb.css",
-    "main.js": "/static/js/main.6be1ee8f.js",
+    "main.css": "/static/css/main.3e268312.css",
+    "main.js": "/static/js/main.51e3bd49.js",
     "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/gears-logo.png": "/static/media/gears-logo.599d844a8f5f1af42c38.png",
+    "static/media/timer-logo-white.svg": "/static/media/timer-logo-white.739a0677c3f4024d7bbb982002a71544.svg",
+    "static/media/timer-logo.svg": "/static/media/timer-logo.d77250415451630370febf4206002989.svg",
+    "static/media/calendar-logo.svg": "/static/media/calendar-logo.6742ad9cee8c63a16599473fcf3af65a.svg",
+    "static/media/clock.svg": "/static/media/clock.5037deddc15a491c1377a7955d46843e.svg",
     "index.html": "/index.html",
-    "main.2624deeb.css.map": "/static/css/main.2624deeb.css.map",
-    "main.6be1ee8f.js.map": "/static/js/main.6be1ee8f.js.map",
+    "static/media/clock-logo.svg": "/static/media/clock-logo.2095716e8bcf57626ae7194040c05c5e.svg",
+    "static/media/add-logo.svg": "/static/media/add-logo.ba9cefac1a5b0143249db381e2b17c6a.svg",
+    "static/media/arrow-logo.svg": "/static/media/arrow-logo.42e10493b481b16127d0ee3b68077138.svg",
+    "static/media/home-logo.svg": "/static/media/home-logo.e706296c0d26388ebda78e51170778c0.svg",
+    "static/media/strike.svg": "/static/media/strike.f7e33b73f9bd5eb72d92652653cef0df.svg",
+    "static/media/arrow-left.svg": "/static/media/arrow-left.3e09588c1aa4992aa580aa6734ed0396.svg",
+    "static/media/arrow-right.svg": "/static/media/arrow-right.ac5290b4139c5f3398a23f3aa13a2c0d.svg",
+    "main.3e268312.css.map": "/static/css/main.3e268312.css.map",
+    "main.51e3bd49.js.map": "/static/js/main.51e3bd49.js.map",
     "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2624deeb.css",
-    "static/js/main.6be1ee8f.js"
+    "static/css/main.3e268312.css",
+    "static/js/main.51e3bd49.js"
   ]
 }
