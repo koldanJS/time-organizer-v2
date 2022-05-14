@@ -50,8 +50,32 @@ router.delete('/stop', auth, async (req, res) => {
         let editItem = editDay.items[activeItem.itemIndex]
         editItem.totalTime += getAdditionTime(activeItem)   // Добавили время
         // Т.к. все это были привязки к ссылкам, editDays содержит измененное значение
+
+        // Изменяем отображение недели
+        const objItems = {}
+        const objTimes = {'Пн': 0, 'Вт': 0, 'Ср': 0, 'Чт': 0, 'Пт': 0, 'Сб': 0, 'Вс': 0, totalTime: 0}
+        for (let day of editDays) {  // Преобразуем дни в объект для недельного отображения
+            for (let item of day.items) {
+                const key = `${item.projectName}____${item.taskName}`
+                if (objItems[key]) {
+                    const totalTime = objItems[key].totalTime + item.totalTime
+                    const dayTime = (objItems[key][day.shortDay] ? objItems[key][day.shortDay]: 0) + item.totalTime
+                    objItems[key] = {...objItems[key], [day.shortDay]: dayTime, totalTime }
+                } else {
+                    objItems[key] = { [day.shortDay]: item.totalTime, totalTime: item.totalTime }
+                }
+            }
+        }
+        Object.values(objItems).forEach(item => {
+            Object.keys(item).forEach(key => {  // Наполняем objTimes временем для всех дней недели
+                objTimes[key] = objTimes[key] + item[key]
+            })
+        })
         // Изменяем timesSheet в БД
-        await TimesSheet.updateOne({ _id: timesSheet._id }, { days: editDays })
+        await TimesSheet.updateOne({ _id: timesSheet._id }, { days: editDays, week: { objItems, objTimes } })
+
+        // // Изменяем timesSheet в БД
+        // await TimesSheet.updateOne({ _id: timesSheet._id }, { days: editDays })
         // Удаляем активную запись
         await ActiveItem.findByIdAndDelete(activeItem._id)
         // Получаем измененную неделю

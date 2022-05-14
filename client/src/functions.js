@@ -50,8 +50,9 @@ export const getDayNumber = (offset) => {
     return now.getDay() ? (now.getDay() - 1) : 6
 }
 
-export const getDateString = (offset) => {
-    const now = getNow(offset)
+export const getDateString = (offset, timePoint = null) => {
+    let now = getNow(offset)
+    if (timePoint) now = new Date(timePoint)
     return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
 }
 

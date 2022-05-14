@@ -1,11 +1,12 @@
-import { CHANGE_OFFSET, SET_MESSAGE, SET_OFFSET } from "../types/appTypes"
+import { CHANGE_OFFSET, SET_MESSAGE, SET_OFFSET, SET_PERMANENT_MESSAGE } from "../types/appTypes"
 import { getDate, getSelectedWeek } from "../../functions"
 
 const initialState = {
     offset: 0,
     selectedDate: getDate(0),
     selectedWeek: getSelectedWeek(0),
-    message: null
+    message: null,
+    permanentMessage: null
 }
 
 const appReducers = (state = initialState, action) => {
@@ -20,6 +21,9 @@ const appReducers = (state = initialState, action) => {
         }
         case SET_MESSAGE: {
             return { ...state, message: action.payload }
+        }
+        case SET_PERMANENT_MESSAGE: {
+            return { ...state, permanentMessage: action.payload }
         }
         default: return state
     }
