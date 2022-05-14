@@ -19,7 +19,7 @@ export const getNewActiveItem = (newItemIndex) => {
 }
 
 export const getAdditionTime = (activeItem) => {
-    if (!activeItem) return 0
+    if (!activeItem) return 0   // Без активной записи не будет добавочного времени
     return Math.round( (Date.now() - activeItem.startTime) / msPerMin )
 }
 

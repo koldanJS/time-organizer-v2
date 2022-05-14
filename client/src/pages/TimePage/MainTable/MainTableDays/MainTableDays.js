@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeOffset } from '../../../../redux/actions/appActions'
-import { getAdditionTime, getFormatTime, getRange, getTotalTime } from '../../../../functions'
+import { getAdditionTime, getDateString, getFormatTime, getOffset, getRange, getSelectedWeek, getTotalTime } from '../../../../functions'
 import DayItem from './DayItem/DayItem'
 import DayTotal from './DayTotal/DayTotal'
 import './MainTableDays.css'
@@ -9,7 +9,7 @@ import './MainTableDays.css'
 const MainTableDays = () => {
 
     const dispatch = useDispatch()
-    const { offset, selectedDate, selectedWeek } = useSelector(state => state.app)
+    const { offset, selectedDate } = useSelector(state => state.app)
     const { timesSheet, activeItem } = useSelector(state => state)
 
     const getDayItems = () => {     //isTimeOn чтоб появлялись часики
@@ -22,7 +22,13 @@ const MainTableDays = () => {
         })
         return timesSheet.days.map((day, index) => {
             let additionTime = 0    // Расчитываем добавочное время, если в дне есть активная запись
-            if (!offset && activeItem && activeItem.dayNumber === index) additionTime = getAdditionTime(activeItem)
+            let activeOffset = 0
+            if (activeItem) activeOffset = getOffset(getDateString(0, activeItem.startTime))  // Если пользователь забыл выключить запись в другом дне
+            if (
+                activeItem &&   // Есть активная запись
+                activeItem.dayNumber === index &&   // Ее день совпадает с этим
+                getSelectedWeek(activeOffset)[0] === getSelectedWeek(offset)[0]    // Они входят в одну неделю
+            ) additionTime = getAdditionTime(activeItem)
             return {
                 isActive: selectedDate.dayNumber === index,
                 day: day.shortDay,

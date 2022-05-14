@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../../hooks/useFetchData'
 import { useMessage } from '../../../../hooks/useMessage'
-import { getAdditionTime, getDayNumber, getFormatTime, getRange, getTotalTime } from '../../../../functions'
+import { getAdditionTime, getDateString, getDayNumber, getFormatTime, getRange, getTotalTime } from '../../../../functions'
 import Button from '../../../../components/UI/Button/Button'
 import './TableTotal.css'
 
@@ -12,15 +12,24 @@ const TableTotal = ({ content }) => {
     const { createArchive } = useFetchData()
     const { setMessageState } = useMessage()
 
-    const { offset, selectedWeek } = useSelector(state => state.app)
+    const { offset, selectedDate, selectedWeek } = useSelector(state => state.app)
     const { timesSheet, archive, activeItem } = useSelector(state => state)
 
     const location = useLocation()
     let path = location.pathname.replace('/time/current/week', '')
     path = path.replace('/', '')    // Если после week что-то было, осталась косая черта
 
-    let totalTime = 0
-    if (timesSheet) totalTime = getFormatTime(getTotalTime(timesSheet.days[getDayNumber(offset)]) + getAdditionTime(activeItem))
+    const calcTotalTime = () => {
+        let totalTime = 0
+        let activeDateString = ''
+        if (activeItem) activeDateString = getDateString(0, activeItem.startTime)
+        if (timesSheet) totalTime = getFormatTime(getTotalTime(timesSheet.days[getDayNumber(offset)]))
+        if (  // Если пользователь забыл выключить запись в другом дне
+            timesSheet &&
+            activeDateString === selectedDate.dateString    // Дни совпадают
+        ) totalTime = getFormatTime(getTotalTime(timesSheet.days[getDayNumber(offset)]) + getAdditionTime(activeItem))
+        return totalTime
+    }
 
     const createArchiveHandler = async () => {
         const dateString = selectedWeek[0]
@@ -65,7 +74,7 @@ const TableTotal = ({ content }) => {
                     ? <>
                         <div className='total' >
                             <p className='text size-20 width-700' >Итого:</p>
-                            <p className='text size-20 width-700' >{ totalTime }</p>
+                            <p className='text size-20 width-700' >{ calcTotalTime() }</p>
                         </div>
                         <div className='submit-week' >
                             <Button clickHandler={ createArchiveHandler } >

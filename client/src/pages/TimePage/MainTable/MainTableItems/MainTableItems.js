@@ -2,7 +2,7 @@ import React from 'react'
 import TableItem from './TableItem/TableItem'
 import EmptyItem from '../../../../components/EmptyItem/EmptyItem'
 import { useSelector } from 'react-redux'
-import { getAdditionTime } from '../../../../functions'
+import { getAdditionTime, getDateString, getOffset, getSelectedWeek } from '../../../../functions'
 import './MainTableItems.css'
 
 const MainTableItems = ({ isLoading = false }) => {
@@ -16,10 +16,12 @@ const MainTableItems = ({ isLoading = false }) => {
         if (!dayItems.length) return <EmptyItem />
         return dayItems.map((item, index) => {
             let itemProps = {...item, index}
+            let activeOffset = 0
+            if (activeItem) activeOffset = getOffset(getDateString(0, activeItem.startTime))  // Если пользователь забыл выключить запись в другом дне
             if (
-                !offset &&  //Что текущий день, иначе априори не активна
-                activeItem &&     //Что есть активные записи
-                activeItem.itemIndex === index  //Для записи, индекс которой соответствует активной
+                activeItem &&   // Есть активная запись
+                activeItem.itemIndex === index &&  //Для записи, индекс которой соответствует активной
+                getSelectedWeek(activeOffset)[0] === getSelectedWeek(offset)[0]    // Они входят в одну неделю
             ) {
                 itemProps.isActive = true
                 itemProps.totalTime += getAdditionTime(activeItem)
