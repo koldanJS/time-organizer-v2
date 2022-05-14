@@ -24,3 +24,19 @@
 .edit-user .footer {
     display: flex;
 }
+
+@media screen and (max-width: 800px) {
+    .edit-user {
+        width: 350px;
+        margin: 25px auto;
+    }
+    .edit-user li {
+        margin: 5px 0;
+    }
+    .edit-user input {
+        width: 100px;
+    }
+    .edit-user .demiliter {
+        margin: 5px 0;
+    }
+}

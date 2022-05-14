@@ -15,6 +15,8 @@ const MainTable = ({ content }) => {
     const [update, setUpdate] = useState(new Date().getSeconds())
     const { activeItem } = useSelector(state => state)
     const { selectedWeek } = useSelector(state => state.app)
+    const { token } = useSelector(state => state.auth)
+
     // Заставляем этот корневой компонент рендериться 2 раза в минуту, если есть активная задача
     useEffect(() => {
         console.log('MainTable: render')
@@ -26,7 +28,7 @@ const MainTable = ({ content }) => {
       }, [activeItem, update])
     // Заставляем этот корневой компонент запрашивать новую неделю при ее изменении
     useEffect(() => {
-        fetchTimesSheet(selectedWeek[0], 'MainTable: fetch TimesSheet')
+        fetchTimesSheet(selectedWeek[0], token, 'MainTable: fetch TimesSheet')
     }, [selectedWeek[0]])
 
     return (

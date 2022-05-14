@@ -1,6 +1,6 @@
 import React from 'react'
 import TableItem from './TableItem/TableItem'
-import EmptyItem from './EmptyItem/EmptyItem'
+import EmptyItem from '../../../../components/EmptyItem/EmptyItem'
 import { useSelector } from 'react-redux'
 import { getAdditionTime } from '../../../../functions'
 import './MainTableItems.css'

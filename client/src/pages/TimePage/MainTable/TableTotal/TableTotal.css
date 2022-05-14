@@ -4,6 +4,17 @@
     align-items: center;
     padding-right: 236px;
 }
+.table-total .week-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    list-style: none;
+}
+.table-total .week-total li {
+    display: flex;
+    justify-content: center;
+    width: 80px;
+}
 .total p {
     margin-top: 25px;
     margin-bottom: 33px;
@@ -14,4 +25,21 @@
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 300px;
+}
+
+@media screen and (max-width: 800px) {
+    .table-total .total {
+        padding-right: 118px;
+    }
+    .table-total .week-total li {
+        width: 40px;
+    }
+    .total p {
+        margin-top: 12px;
+        margin-bottom: 16px;
+        margin-left: 25px;
+    }
+    .submit-week {
+        margin-bottom: 150px;
+    }
 }

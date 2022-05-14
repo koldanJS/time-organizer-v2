@@ -44,19 +44,18 @@ const TableTotal = ({ content }) => {
         }
     }
 
-    const getTimeWeekArray = () => {
-        // if (isLoading) return [0, 0, 0, 0, 0, 0, 0, 0]
-        // let { objItems, objTimes } = timesSheet?.week || {}   // Получили данные для отображения недельного формата
-        // if (path) {  //Если есть путь после week, значит отобразить соответствующую запись из архива
-        //     const archiveItem = archive.find(item => item.date === path)
-        //     objItems = archiveItem.week.objItems
-        //     objTimes = archiveItem.week.objTimes
-        // }
-        // if (!objItems || !Object.keys(objItems).length) return ( // Если длина массива записей 0
-        //     <li className='week-table-item'>
-        //         <EmptyItem text='Записи отсутствуют' />
-        //     </li>
-        // )
+    const getWeekTime = () => {
+        let { objTimes } = timesSheet?.week || {}   // Получили данные для отображения недельного формата
+        if (path) {  //Если есть путь после week, значит отобразить соответствующую запись из архива
+            const archiveItem = archive.find(item => item.date === path)
+            objTimes = archiveItem.week.objTimes
+        }
+        if (!objTimes) objTimes = {}
+        return ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'totalTime'].map((title, index) => {
+            return <li key={ index } >
+                <p className='text size-20 width-700' >{ objTimes[title] || 0 }</p>
+            </li>
+        })
     }
 
     return (
@@ -74,10 +73,12 @@ const TableTotal = ({ content }) => {
                             </Button>
                         </div>
                     </>
-                    : <div className='total' >
-                        <p className='text size-20 width-700' >Итого:</p>
-                        <p className='text size-20 width-700' >{ totalTime }</p>
-                    </div>
+                    : <ul className='week-total' >
+                        <li>
+                            <p className='text size-20 width-700' >Итого:</p>
+                        </li>
+                        { getWeekTime() }
+                    </ul>
             }
         </div>
     )

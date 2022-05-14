@@ -7,7 +7,6 @@
 }
 .week-table .days {
     display: flex;
-    justify-content: space-between;
 }
 .week-table .days li {
     display: flex;
@@ -55,4 +54,25 @@
 }
 .week-table .week-table-item .demiliter {
     margin: 0;
+}
+
+@media screen and (max-width: 800px) {
+    .week-table .header {
+        padding-left: 5px;
+        margin: 10px 0;
+    }
+    .week-table .days li {
+        width: 40px;
+    }
+    .week-table .days .name {
+        width: 250px;
+        padding: 5px;
+    }
+    .week-table .head-item.days .name {
+        padding: 7px 5px;
+    }
+    .week-table .week-table-item {
+        padding: 2px 0;
+        margin: 2px 0;
+    }
 }

@@ -33,3 +33,22 @@
     height: 70px;
     
 }
+
+@media screen and (max-width: 800px) {
+    .new-entry-btn {
+        width: 33px;
+        height: 52px;
+        margin-right: 5px;
+        margin-top: 34px;
+        border-radius: 4px;
+    }
+    .new-entry-btn img {
+        width: 25px;
+        height: 25px;
+        margin-bottom: 3px;
+    }
+    .bg {
+        width: 30px;
+        height: 35px;
+    }
+}

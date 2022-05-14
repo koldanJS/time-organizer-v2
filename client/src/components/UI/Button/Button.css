@@ -21,3 +21,22 @@
     height: 36px;
     width: 98px;
 }
+
+@media screen and (max-width: 800px) {
+    .btn {
+        border-radius: 5px;
+        padding: 3px;
+    }
+    .btn.start {
+        width: 45px;
+    }
+    .btn.start img {
+        height: 11px;
+        width: 11px;
+        margin-right: 3px;
+    }
+    .btn.edit {
+        height: 18px;
+        width: 49px;
+    }
+}

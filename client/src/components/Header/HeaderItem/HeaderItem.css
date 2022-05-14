@@ -26,3 +26,21 @@
     background-color: transparent;
     border: none;
 }
+
+@media screen and (max-width: 800px) {
+    .header-item a {
+        width: 90px;
+        height: 25px;
+    }
+    .header-item.home img {
+        width: 16px;
+        height: 16px;
+    }
+    .header-item.home a {
+        width: 25px;
+    }
+    .header-item button {
+        width: 90px;
+        height: 25px;
+    }
+}

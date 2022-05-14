@@ -12,7 +12,8 @@
     width: 60%;
 }
 .message.main-table-page,
-.message.archive-page {
+.message.archive-page,
+.message.main-message {
     width: 380px;
 }
 .message p {
@@ -26,4 +27,22 @@
 .message p.error {
     border: 1px solid red;
     background-color: rgb(255, 202, 202);
+}
+
+@media screen and (max-width: 800px) {
+    .message.projects-page {
+        width: 300px;
+    }
+    .message.edit-user-page {
+        width: 60%;
+    }
+    .message.main-table-page,
+    .message.archive-page,
+    .message.main-message {
+        width: 190px;
+    }
+    .message p {
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
 }

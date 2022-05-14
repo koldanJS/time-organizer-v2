@@ -21,3 +21,14 @@
 .select select:hover {
     border: 1px solid black;
 }
+
+@media screen and (max-width: 800px) {
+    .select {
+        margin-bottom: 7px;
+    }
+    .select select {
+        border-radius: 3px;
+        margin: 0 0 5px;
+        height: 15px;
+    }
+}

@@ -63,3 +63,19 @@
     color: #000;
     cursor: not-allowed;
 }
+
+@media screen and (max-width: 800px) {
+    .Button {
+        border-radius: 4px;
+        padding: 3px 7px;
+        margin-right: 2px;
+    }
+    .Button.delete {
+
+        margin-left: 10px;
+    }
+    .Button.sign {
+        width: 225px;
+        margin: 0;
+    }
+}

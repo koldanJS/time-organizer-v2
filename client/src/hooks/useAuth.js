@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 
-const storageName = 'userData'
+export const storageName = 'time-organizer/userData'
 
 export const useAuth = () => {
     // Устанавливаем начальные состояния (при перезагрузке страницы)

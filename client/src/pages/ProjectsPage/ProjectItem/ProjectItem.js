@@ -60,8 +60,8 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
 
     const addTask = event => {
         if (event.code !== 'Enter') return //Срабатывает только на Enter
-        if (!taskName) return setMessage({ message: 'Имя задачи не должно быть пустым!', type: 'error' })
-        if (taskName.length > 25) return setMessage({ message: 'Имя задачи более 25 символов!', type: 'error' })
+        if (!taskName) return setMessage('Имя задачи не должно быть пустым!', 'error', 'projects-page')
+        if (taskName.length > 25) return setMessage('Имя задачи более 25 символов!', 'error', 'projects-page')
         setNewTasks([...newTasks, { name: taskName }])    // Добавляем имя задачи, id проекта и пользователя добавятся на сервере
         setIsAddTask(false) // Отключаем редактор задач
         setTaskName('') //Далее очищаем сопутствующие поля
@@ -109,32 +109,32 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
     }
 
     const saveChangesHandler = async () => {
-        if (!form.projectName) return setMessage({ message: 'Имя проекта не должно быть пустым!', type: 'error' })
-        if (form.projectName.length > 25) return setMessage({ message: 'Название проекта более 25 символов!', type: 'error' })
-        if (form.description.length > 50) return setMessage({ message: 'Описание проекта более 50 символов!', type: 'error' })
+        if (!form.projectName) return setMessage('Имя проекта не должно быть пустым!', 'error', 'projects-page')
+        if (form.projectName.length > 25) return setMessage('Название проекта более 25 символов!', 'error', 'projects-page')
+        if (form.description.length > 50) return setMessage('Описание проекта более 50 символов!', 'error', 'projects-page')
         try {
             const response = await editProject(form, project._id, newTasks, deletedTasksId, 'editProject')
-            setMessage({ message: response.message, type: 'success' })
+            setMessage(response.message, 'success', 'projects-page')
             await fetchProjectData('ProjectItem: fetch projects and tasks')
             cancelEdit() //Закрыли компонент, редактирующий проекты
         } catch(e) {
-            setMessage({ message: e.message, type: 'error' })
+            setMessage(e.message, 'error', 'projects-page')
         }
     }
 
     const deleteProjectHandler = async () => {
         try {
             const response = await deleteProject(project._id, 'deleteProject')
-            setMessage({ message: response.message, type: 'success' })
+            setMessage(response.message, 'success', 'projects-page')
             await fetchProjectData('ProjectItem: fetch projects and tasks')
             cancelEdit() //Закрыли компонент, редактирующий проекты
         } catch(e) {
-            setMessage({ message: e.message, type: 'error' })
+            setMessage(e.message, 'error', 'projects-page')
         }
     }
 
     const editStart = () => {
-        if (isAddNewProject) return setMessage({ message: 'Сначала завершите создание нового проекта!', type: 'error' })
+        if (isAddNewProject) return setMessage('Сначала завершите создание нового проекта!', 'error', 'projects-page')
         changeIsEdit(project._id)
     }
 

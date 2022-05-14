@@ -19,3 +19,17 @@
     width: 15px;
     height: 15px;
 }
+
+@media screen and (max-width: 800px) {
+    .circle {
+        width: 20px;
+        height: 20px;
+    }
+    .user-name {
+        padding: 0 5px;
+    }
+    .user-settings img {
+        width: 7px;
+        height: 7px;
+    }
+}

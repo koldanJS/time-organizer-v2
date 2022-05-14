@@ -22,3 +22,11 @@
     height: 22px;
     align-items: center;
 }
+
+@media screen and (max-width: 800px) {
+    .day-item {
+        width: 60px;
+        height: 25px;
+        padding: 2px 0px 0px 4px;
+    }
+}

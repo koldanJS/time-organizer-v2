@@ -1,13 +1,16 @@
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
+import { useFetchData } from '../../../hooks/useFetchData'
 import './DropDown.css'
 
 const DropDown = ({ closeDropDown, firstName, lastName, company }) => {
 
     const navigate = useNavigate()
 
-    const auth = useContext(AuthContext)
+    // const auth = useContext(AuthContext)
+
+    const { fullLogout } = useFetchData()
 
     return (
         <>
@@ -23,7 +26,7 @@ const DropDown = ({ closeDropDown, firstName, lastName, company }) => {
                     </button>
                 </div>
                 <div className='logout' >
-                    <button onClick={ auth.logout } >
+                    <button onClick={ fullLogout } >
                         <p className='text' >Выйти</p>
                     </button>
                 </div>

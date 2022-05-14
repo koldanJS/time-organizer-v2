@@ -44,3 +44,25 @@
     align-items: center;
     margin-top: 200px;
 }
+
+@media screen and (max-width: 800px) {
+    .auth {
+        width: 270px;
+    }
+    .auth .auth-text {
+        margin-bottom: 10px;
+    }
+    .auth .register {
+        height: 20px;
+        padding: 0 22px;
+    }
+    .register a {
+        margin-left: 15px;
+    }
+    .auth-items {
+        margin-top: 15px;
+    }
+    .auth-loader {
+        margin-top: 100px;
+    }
+}

@@ -54,3 +54,36 @@
     height: 25px;
     margin: 0px 5px;
 }
+
+@media screen and (max-width: 800px) {
+    .home-page {
+        width: 350px;
+    }
+    .home-page h1 {
+        margin-top: 40px;
+    }
+    .home-page h2 {
+        margin: 10px 0;
+    }
+    .home-page .demiliter {
+        margin: 10px 0;
+    }
+    .block-left {
+        width: 225px;
+    }
+    .block-left button {
+        border-radius: 4px;
+        height: 22px;
+        margin: 2px 0;
+    }
+    .big-logo {
+        width: 125px;
+        height: 125px;
+        margin: 5px 0;
+    }
+    .little-logo {
+        width: 12px;
+        height: 12px;
+        margin: 0px 2px;
+    }
+}

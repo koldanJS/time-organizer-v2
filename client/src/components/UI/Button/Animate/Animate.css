@@ -50,3 +50,12 @@
 .table-item.active .strike.minute {
     animation-duration: 10s;
 }
+
+@media screen and (max-width: 800px) {
+    .table-item.active .animate {
+        position: relative;
+        width: 11px;
+        height: 11px;
+        margin-right: 3px;
+    }
+}

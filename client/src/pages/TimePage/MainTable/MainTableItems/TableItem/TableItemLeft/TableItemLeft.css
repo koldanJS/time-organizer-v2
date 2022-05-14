@@ -13,3 +13,13 @@
 .table-item-left p {
     margin-top: 10px;
 }
+
+@media screen and (max-width: 800px) {
+    .table-item-left {
+        padding: 0 8px;
+        height: 35px;
+    }
+    .table-item-left p {
+        margin-top: 5px;
+    }
+}

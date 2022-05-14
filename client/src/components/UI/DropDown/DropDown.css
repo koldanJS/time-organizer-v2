@@ -48,3 +48,27 @@
     left: 0;
     z-index: 90;
 }
+
+@media screen and (max-width: 800px) {
+    .drop-down {
+        position: absolute;
+        top: 26px;
+        right: 200px;
+        width: 100px;
+        border-radius: 2px;
+    }
+    .drop-down div {
+        padding: 5px 0;
+    }
+    .drop-down .info {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .drop-down button {
+        height: 20px;
+    }
+    .drop-down button p {
+        text-align: left;
+        padding-left: 5px;
+    }
+}

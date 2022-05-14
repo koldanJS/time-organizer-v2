@@ -1,5 +1,5 @@
 import React from 'react'
-import Loader from '../../../../../components/Loader/Loader'
+import Loader from '../Loader/Loader'
 import './EmptyItem.css'
 
 const EmptyItem = ({ isLoading = false, text = 'Добавляйте новые задачи и они появятся здесь!' }) => {

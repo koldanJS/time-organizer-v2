@@ -97,3 +97,45 @@ img.cancel {
 input.add-task {
     width: 90%;
 }
+
+@media screen and (max-width: 800px) {
+    .projects li.project-item {
+        padding-bottom: 5px;
+    }
+    .projects .project-item ul {
+        margin-top: 5px;
+    }
+    .projects li.task-item button {
+        height: 7px;
+        width: 7px;
+    }
+    .project-item p {
+        margin: 2px 0;
+    }
+    .project-item p.mar-r {
+        margin-right: 7px;
+    }
+    li.tasks img {
+        width: 7px;
+        height: 7px;
+    }
+    .editor button {
+        border-radius: 3px;
+        width: 15px;
+        height: 15px;
+        margin-top: 2px;
+    }
+    .editor img,
+    .add-task img {
+        width: 11px;
+        height: 11px;
+    }
+    img.cancel {
+        width: 7px;
+        height: 7px;
+    }
+    .edit-project {
+        border-radius: 8px;
+        height: 50px;
+    }
+}

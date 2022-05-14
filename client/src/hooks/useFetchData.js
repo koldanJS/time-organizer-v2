@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAuthState } from '../redux/actions/authActions'
 import { getProjects } from '../redux/actions/projectActions'
@@ -7,19 +7,35 @@ import { getTimesSheet } from '../redux/actions/timesSheetActions'
 import { getArchive } from '../redux/actions/archiveActions'
 import { getActiveItem } from '../redux/actions/activeItemActions'
 import { getUser } from '../redux/actions/userActions'
+import { AuthContext } from '../context/AuthContext'
 import { useAuth } from './useAuth'
 import { useHttp } from './useHttp'
+import { useMessage } from './useMessage'
 
 export const useFetchData = () => {
+
     const { request, loading } = useHttp()
-    const { token, userId, ready, logout } = useAuth()
+    const { token } = useAuth()
+    const auth = useContext(AuthContext)
+    const { setMessageState } = useMessage()
+
     const dispatch = useDispatch()
     const { selectedWeek } = useSelector(state => state.app)
+
     //Создаем состояние в хуке
     const [isLoad, setIsLoad] = useState(false)
+
+    const sessionError = () => {
+        setMessageState('Ошибка сеанса, авторизуйтесь', 'error', 'main-message')
+    }
+
+    const fullLogout = () => {
+        auth.logout()
+        dispatch(getAuthState({}))
+    }
+
     //Эта ф/я будет делать все http запросы на все данные разом
-    const fetchData = useCallback(async (logString) => {
-        if (!ready) return
+    const fetchData = useCallback(async (token, userId, logString) => {
         console.log(logString)
         try {
             const user = await request(
@@ -68,13 +84,12 @@ export const useFetchData = () => {
             dispatch(getActiveItem(activeItem))
             setIsLoad(true) // Показывает что произошла загрузка данных
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const fetchProjectData = useCallback(async (logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const projects = await request(
@@ -92,13 +107,12 @@ export const useFetchData = () => {
             dispatch(getProjects(projects))
             dispatch(getTasks(tasks))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const createProject = useCallback(async (form, newTasks, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const response = await request(
@@ -109,13 +123,12 @@ export const useFetchData = () => {
             )
             return response
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const editProject = useCallback(async (form, projectId, newTasks, deletedTasksId, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const response = await request(
@@ -126,13 +139,12 @@ export const useFetchData = () => {
             )
             return response
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const deleteProject = useCallback(async (projectId, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const response = await request(
@@ -143,13 +155,12 @@ export const useFetchData = () => {
             )
             return response
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const fetchNewTaskItem = useCallback(async (timesSheetId, dayNumber, newTaskItem, logString, index = -1, isDelete = false) => {
-        if (!ready) return
         console.log(logString)
         try {
             const timesSheet = await request(
@@ -161,13 +172,12 @@ export const useFetchData = () => {
             // Если все прошло успешно, можно записать состояние в state в redux
             dispatch(getTimesSheet(timesSheet))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const startTracking = useCallback(async (index, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const activeItem = await request(
@@ -178,13 +188,12 @@ export const useFetchData = () => {
             )
             dispatch(getActiveItem(activeItem))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const stopTracking = useCallback(async (logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const response = await request(
@@ -196,13 +205,12 @@ export const useFetchData = () => {
             dispatch(getActiveItem(null))
             dispatch(getTimesSheet(response.editTimesSheet))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const createTimesSheet = useCallback(async (dateString, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const timesSheet = await request(
@@ -214,13 +222,12 @@ export const useFetchData = () => {
             dispatch(getTimesSheet(timesSheet))
             return timesSheet
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
-    const fetchTimesSheet = useCallback(async (dateString, logString) => {
-        if (!ready) return
+    const fetchTimesSheet = useCallback(async (dateString, token, logString) => {
         console.log(logString)
         try {
             const timesSheet = await request(
@@ -231,13 +238,13 @@ export const useFetchData = () => {
             )
             dispatch(getTimesSheet(timesSheet))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            console.log('fetchTimesSheet')
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const createArchive = useCallback(async (dateString, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const archive = await request(
@@ -249,13 +256,12 @@ export const useFetchData = () => {
             dispatch(getArchive(archive))
             dispatch(getTimesSheet(null))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
 
     const deleteArchive = useCallback(async (id, logString) => {
-        if (!ready) return
         console.log(logString)
         try {
             const archive = await request(
@@ -266,7 +272,7 @@ export const useFetchData = () => {
             )
             dispatch(getArchive(archive))
         } catch(e) {
-            if (e.message === 'Нет авторизации') logout()
+            if (e.message === 'Нет авторизации') sessionError()
             console.log(e.message)
         }
     }, [token, request])
@@ -274,6 +280,7 @@ export const useFetchData = () => {
     return {
         isLoad,
         loading,
+        fullLogout,
         fetchData,
         fetchProjectData,
         createProject,

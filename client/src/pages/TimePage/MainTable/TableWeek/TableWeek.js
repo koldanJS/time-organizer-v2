@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { setOffset } from '../../../../redux/actions/appActions'
 import { getDate, getOffset, getRange } from '../../../../functions'
+import EmptyItem from '../../../../components/EmptyItem/EmptyItem'
 import './TableWeek.css'
-import EmptyItem from '../MainTableItems/EmptyItem/EmptyItem'
 
 const TableWeek = ({ isLoading }) => {
 
@@ -26,11 +26,10 @@ const TableWeek = ({ isLoading }) => {
         if (isLoading) return <li className='week-table-item'>
             <EmptyItem isLoading={true} />
         </li>
-        let { objItems, objTimes } = timesSheet?.week || {}   // Получили данные для отображения недельного формата
+        let { objItems } = timesSheet?.week || {}   // Получили данные для отображения недельного формата
         if (path) {  //Если есть путь после week, значит отобразить соответствующую запись из архива
             const archiveItem = archive.find(item => item.date === path)
             objItems = archiveItem.week.objItems
-            objTimes = archiveItem.week.objTimes
         }
         if (!objItems || !Object.keys(objItems).length) return ( // Если длина массива записей 0
             <li className='week-table-item'>
@@ -46,12 +45,15 @@ const TableWeek = ({ isLoading }) => {
                             <p className='text' >{ stringName.split('____')[1] }</p>
                         </li>
                         {
-                            ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', ].map((dayString, index) => {
+                            ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс' ].map(dayString => {
                                 return <li className='text' key={ dayString }>
                                     { objItems[stringName][dayString] || 0 }
                                 </li>
                             })
                         }
+                        <li className='text width-700'>
+                            { objItems[stringName].totalTime || 0 }
+                        </li>
                     </ul>
                     <hr className='demiliter' />
                 </li>
@@ -84,6 +86,9 @@ const TableWeek = ({ isLoading }) => {
             <ul className='text head-item days'>
                 <li className='name'>Проект / Задача</li>
                 { getDays() }
+                <li >
+                    <p className='text width-700' >Итого</p>
+                </li>
             </ul>
             <ul>
                 { getEntry() }

@@ -33,3 +33,24 @@
     background-position: center center;
     cursor: pointer;
 }
+
+@media screen and (max-width: 800px) {
+    .calendar-btn {
+        margin-right: 4px;
+    }
+    .calendar-btn img {
+        width: 11px;
+        height: 11px;
+    }
+    .table-header-right input {
+        border-radius: 5px;
+        width: 18px;
+        height: 18px;
+        padding: 2px;
+        margin-right: 5px;
+    }
+    .table-header-right input::-webkit-calendar-picker-indicator {
+        width: 11px;
+        height: 11px;
+    }
+}

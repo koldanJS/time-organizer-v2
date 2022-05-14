@@ -73,3 +73,43 @@
     background-color: #EECBFF;
     cursor: auto;
 }
+
+@media screen and (max-width: 800px) {
+    .left-right-btn {
+        border-radius: 5px;
+    }
+    .left-right-btn img {
+        width: 11px;
+        height: 11px;
+    }
+    .left-right-btn.arrow {
+        width: 36px;
+        margin-right: 3px;
+    }
+    .left-right-btn.day-week {
+        background-color: #CE6AFD;
+        width: 67px;
+    }
+    .btn-left {
+        height: 17px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    .btn-left.arrow {
+        width: 18px;
+    }
+    .btn-left.day {
+        width: 30px;
+    }
+    .btn-right {
+        height: 17px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .btn-right.arrow {
+        width: 18px;
+    }
+    .btn-right.week {
+        width: 37px;
+    }
+}
