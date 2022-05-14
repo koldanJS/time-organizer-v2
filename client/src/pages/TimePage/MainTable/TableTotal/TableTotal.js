@@ -53,7 +53,7 @@ const TableTotal = ({ content }) => {
         if (!objTimes) objTimes = {}
         return ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'totalTime'].map((title, index) => {
             return <li key={ index } >
-                <p className='text size-20 width-700' >{ objTimes[title] || 0 }</p>
+                <p className='text size-20 width-700' >{ getFormatTime(objTimes[title] || 0) }</p>
             </li>
         })
     }

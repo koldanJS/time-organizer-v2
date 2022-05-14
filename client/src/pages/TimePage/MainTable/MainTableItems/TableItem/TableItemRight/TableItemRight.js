@@ -31,7 +31,7 @@ const TableItemRight = ({totalTime, isActive, index}) => {
     }
 
     const startHandler = async () => {
-        if (offset) return
+        if (offset) return setMessageState('Нельзя запустить не сегодня!', 'error', 'main-table-page')
         if (activeItem) await stopTracking('editTaskItem (start - stop other): stopTracking') // Тогда останавливаем ее
         await startTracking(index, 'editTaskItem (start): startTracking')  //Устанавливает данную запись активной, если offset === 0
         setMessageState('Запись запущена!', 'success', 'main-table-page')

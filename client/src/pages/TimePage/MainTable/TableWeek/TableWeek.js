@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { setOffset } from '../../../../redux/actions/appActions'
-import { getDate, getOffset, getRange } from '../../../../functions'
+import { getDate, getFormatTime, getOffset, getRange } from '../../../../functions'
 import EmptyItem from '../../../../components/EmptyItem/EmptyItem'
 import './TableWeek.css'
 
@@ -47,12 +47,12 @@ const TableWeek = ({ isLoading }) => {
                         {
                             ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс' ].map(dayString => {
                                 return <li className='text' key={ dayString }>
-                                    { objItems[stringName][dayString] || 0 }
+                                    { getFormatTime(objItems[stringName][dayString] || 0) }
                                 </li>
                             })
                         }
                         <li className='text width-700'>
-                            { objItems[stringName].totalTime || 0 }
+                            { getFormatTime(objItems[stringName].totalTime || 0) }
                         </li>
                     </ul>
                     <hr className='demiliter' />
