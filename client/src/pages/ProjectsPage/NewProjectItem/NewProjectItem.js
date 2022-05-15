@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useFetchData } from '../../../hooks/useFetchData'
+import TaskItem from '../TaskItem/TaskItem'
 import images from '../../../components/img/img'
 import './NewProjectItem.css'
 
 const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
 
-    const { fetchProjectData, createProject, deleteProject } = useFetchData()
+    const { fetchProjectData, createProject } = useFetchData()
     const [isAddTask, setIsAddTask] = useState(false)
     const [form, setForm] = useState({ projectName: '', description: '' })
     const [taskName, setTaskName] = useState('')
@@ -46,32 +47,6 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
         setNewTasks(newTasks.filter((task, i) => i !== index))  // Отфильтровать из массива задачу с таким индексом
     }
 
-    const addTaskInput = () => {
-        const closeTaskInput = () => {
-            setIsAddTask(false)
-            setTaskName('')
-        }
-        return (
-            <>
-                <input
-                    className='add-task text'
-                    value={ taskName }
-                    placeholder='Название задачи...'
-                    onChange={ (e) => setTaskName(e.target.value) }
-                    onKeyDown={ addTask }
-                    onBlur={ addTask }
-                    autoFocus
-                />
-                <button onClick={ closeTaskInput } >
-                    <img
-                        src={images.xLogo}
-                        alt='X'
-                    />
-                </button>
-            </>
-        )
-    }
-
     const saveChanges = async () => {
         if (!form.projectName) return setMessage('Имя проекта не должно быть пустым!', 'error', 'projects-page')
         if (form.projectName.length > 25) return setMessage('Название проекта более 25 символов!', 'error', 'projects-page')
@@ -84,6 +59,16 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
         } catch(e) {
             setMessage(e.message, 'error', 'projects-page')
         }
+    }
+
+    const taskItemProps = {
+        isAddTask,
+        setIsAddTask,
+        taskName,
+        setTaskName,
+        addTask,
+        plusLogo: images.plusLogo,
+        xLogo: images.xLogo
     }
 
     return (
@@ -131,20 +116,7 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
                 <li className='tasks' >
                     <ul className='tasks-list'>
                         { getTasks() }
-                        <li className='task-item' >
-                            {
-                                isAddTask
-                                    ? addTaskInput()
-                                    : <button
-                                        onClick={ () => setIsAddTask(!isAddTask) }
-                                    >
-                                        <img
-                                            src={images.plusLogo}
-                                            alt='Add'
-                                        />
-                                    </button>
-                            }
-                        </li>
+                        <TaskItem {...taskItemProps} />
                     </ul>
                 </li>
             </ul>

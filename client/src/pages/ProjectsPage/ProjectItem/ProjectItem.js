@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../hooks/useFetchData'
+import TaskItem from '../TaskItem/TaskItem'
 import images from '../../../components/img/img'
 import './ProjectItem.css'
 
@@ -75,32 +76,6 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
         setNewTasks(newTasks.filter((task, i) => i !== index))  // Отфильтровать из массива задачу с таким индексом
     }
 
-    const addTaskInput = () => {
-        const closeTaskInput = () => {
-            setIsAddTask(false)
-            setTaskName('')
-        }
-        return (
-            <>
-                <input
-                    className='add-task text'
-                    value={ taskName }
-                    placeholder='Название задачи...'
-                    onChange={ (e) => setTaskName(e.target.value) }
-                    onKeyDown={ addTask }
-                    onBlur={ addTask }
-                    autoFocus
-                />
-                <button onClick={ closeTaskInput } >
-                    <img
-                        src={images.xLogo}
-                        alt='X'
-                    />
-                </button>
-            </>
-        )
-    }
-
     const cancelEdit = () => {
         setIsAddTask(false)
         setForm({ projectName: project.name, description: project.description })
@@ -138,6 +113,16 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
     const editStart = () => {
         if (isAddNewProject) return setMessage('Сначала завершите создание нового проекта!', 'error', 'projects-page')
         changeIsEdit(project._id)
+    }
+
+    const taskItemProps = {
+        isAddTask,
+        setIsAddTask,
+        taskName,
+        setTaskName,
+        addTask,
+        plusLogo: images.plusLogo,
+        xLogo: images.xLogo
     }
 
     return (
@@ -215,20 +200,7 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
                         { getTasks() }
                         {
                             (isEdit === project._id)
-                                ? <li className='task-item' >
-                                    {
-                                        isAddTask
-                                            ? addTaskInput()
-                                            : <button
-                                                onClick={ (e) => setIsAddTask(!isAddTask) }
-                                            >
-                                                <img
-                                                    src={images.plusLogo}
-                                                    alt='Add'
-                                                />
-                                            </button>
-                                    }
-                                </li>
+                                ? <TaskItem {...taskItemProps} />
                                 : null
                         }
                     </ul>
