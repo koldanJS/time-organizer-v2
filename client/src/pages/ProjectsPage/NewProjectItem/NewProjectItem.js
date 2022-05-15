@@ -34,7 +34,7 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
     }
 
     const addTask = event => {
-        if (event.code !== 'Enter') return //Срабатывает только на Enter
+        if (event.code !== 'Enter' && event.type !== 'blur') return //Срабатывает только на Enter и событиу blur
         if (!taskName) return setMessage('Имя задачи не должно быть пустым!', 'error', 'projects-page')
         if (taskName.length > 25) return setMessage('Имя задачи более 25 символов!', 'error', 'projects-page')
         setNewTasks([...newTasks, { name: taskName }])    // Добавляем имя задачи, id проекта и пользователя добавятся на сервере
@@ -59,6 +59,8 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
                     placeholder='Название задачи...'
                     onChange={ (e) => setTaskName(e.target.value) }
                     onKeyDown={ addTask }
+                    onBlur={ addTask }
+                    autoFocus
                 />
                 <button onClick={ closeTaskInput } >
                     <img
