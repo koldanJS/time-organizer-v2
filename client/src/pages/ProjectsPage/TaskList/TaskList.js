@@ -1,35 +1,7 @@
 import React from 'react'
-import './TasksList.css'
+import './TaskList.css'
 
-const TasksList = ({ isEdit }) => {
-
-    const getTasks = () => {
-        return (
-            
-            .concat(
-                
-            )
-                
-        )
-    }
-
-    const newGetTasks = () => {
-        return (
-            newTasks.map( (task, index) => {
-                return (
-                    <li className='task-item' key={ index }>
-                        <p className='text' > { task.name } </p>
-                        <button onClick={ () => deleteTask(index) } >
-                            <img
-                                src={images.xLogo}
-                                alt='X'
-                            />
-                        </button>
-                    </li>
-                )
-            } )
-        )
-    }
+const TaskList = ({ isEdit }) => {
 
     const taskItemProps = {
         isAddTask,
@@ -87,4 +59,4 @@ const TasksList = ({ isEdit }) => {
 
 }
 
-export default TasksList
+export default TaskList
