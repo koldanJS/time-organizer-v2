@@ -60,8 +60,9 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
     }
 
     const addTask = event => {
-        if (event.code !== 'Enter' && event.type !== 'blur') return //Срабатывает только на Enter и событиу blur
-        if (!taskName) return setMessage('Имя задачи не должно быть пустым!', 'error', 'projects-page')
+        if (event.code !== 'Enter' && event.type !== 'blur') return //Срабатывает только на Enter и событие blur
+        if (event.type === 'blur' && !taskName) return // Ошибок тут нет, поле просто будет без фокуса ждать ввод
+        if (event.code === 'Enter' && !taskName) return setMessage('Имя задачи не должно быть пустым!', 'error', 'projects-page')
         if (taskName.length > 25) return setMessage('Имя задачи более 25 символов!', 'error', 'projects-page')
         setNewTasks([...newTasks, { name: taskName }])    // Добавляем имя задачи, id проекта и пользователя добавятся на сервере
         setIsAddTask(false) // Отключаем редактор задач
