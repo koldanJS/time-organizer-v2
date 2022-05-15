@@ -10,7 +10,12 @@ const AddTaskItem = ({ isAddTask, setIsAddTask, taskName, setTaskName, addTask, 
     }
 
     return (
-        <li className='task-item' >
+        <li
+            className='task-item'
+            onBlurCapture={ (e) => {
+            if (e?.relatedTarget?.parentNode === e.target.parentNode) e.stopPropagation()
+            } }
+        >
         {
             isAddTask
                 ? <input
@@ -19,12 +24,12 @@ const AddTaskItem = ({ isAddTask, setIsAddTask, taskName, setTaskName, addTask, 
                     placeholder='Название задачи...'
                     onChange={ (e) => setTaskName(e.target.value) }
                     onKeyDown={ addTask }
-                    onBlur={ addTask }
                     autoFocus
+                    onBlur={ addTask }
                 />
                 : null
         }
-        <button onClick={
+        <button className='task-cancel' onClick={
             isAddTask
                 ? closeTaskInput
                 : (e) => setIsAddTask(!isAddTask)

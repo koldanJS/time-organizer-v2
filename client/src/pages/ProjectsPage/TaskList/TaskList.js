@@ -1,57 +1,51 @@
 import React from 'react'
+import TaskItem from '../TaskItem/TaskItem'
+import AddTaskItem from '../AddTaskItem/AddTaskItem'
 import './TaskList.css'
 
-const TaskList = ({ isEdit }) => {
-
-    const taskItemProps = {
-        isAddTask,
-        setIsAddTask,
-        taskName,
-        setTaskName,
-        addTask,
-        plusLogo: images.plusLogo,
-        xLogo: images.xLogo
-    }
+const TaskList = ({
+    xLogo,
+    isEdit = true,
+    newTasks,
+    showingTasks = [],
+    deleteExistingTask,
+    deleteNewTask,
+    addTaskItemProps
+}) => {
 
     return (
-        <ul className='tasks-list'>
+        <ul className='task-list'>
             {
                 showingTasks.map( task => {
                     return (
-                        <li className='task-item' key={ task._id }>
-                            <p className={ (isEdit === project._id) ? 'text' : 'text mar-r' } > { task.name } </p>
-                            {
-                                (isEdit === project._id)
-                                    ? <button onClick={ () => deleteExistingTask(task._id) } >
-                                        <img
-                                            src={images.xLogo}
-                                            alt='X'
-                                        />
-                                    </button>
-                                    : null
-                            }
-                        </li>
+                        < TaskItem
+                            key={ task._id }
+                            taskName={ task.name }
+                            taskId={ task._id }
+                            xLogo={ xLogo }
+                            isEdit={ isEdit }
+                            deleteHandler={ deleteExistingTask }
+                        />
                     )
                 } )
             }
             {
                 newTasks.map( (task, index) => {
                     return (
-                        <li className='task-item' key={ index }>
-                            <p className='text' > { task.name } </p>
-                            <button onClick={ () => deleteNewTask(index) } >
-                                <img
-                                    src={images.xLogo}
-                                    alt='X'
-                                />
-                            </button>
-                        </li>
+                        < TaskItem
+                            key={ index }
+                            taskName={ task.name }
+                            index={ index }
+                            xLogo={ xLogo }
+                            isEdit={ isEdit }
+                            deleteHandler={ deleteNewTask }
+                        />
                     )
                 } )
             }
             {
-                (isEdit === project._id)
-                    ? <TaskItem {...taskItemProps} />
+                isEdit
+                    ? <AddTaskItem {...addTaskItemProps} xLogo={ xLogo } />
                     : null
             }
         </ul>

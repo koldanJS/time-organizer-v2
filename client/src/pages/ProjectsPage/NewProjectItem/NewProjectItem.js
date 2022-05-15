@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useFetchData } from '../../../hooks/useFetchData'
-import AddTaskItem from '../AddTaskItem/AddTaskItem'
+import TaskList from '../TaskList/TaskList'
 import images from '../../../components/img/img'
 import './NewProjectItem.css'
 
@@ -16,27 +16,9 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
         setForm({...form, [event.target.name]: event.target.value})
     }
 
-    const getTasks = () => {
-        return (
-            newTasks.map( (task, index) => {
-                return (
-                    <li className='task-item' key={ index }>
-                        <p className='text' > { task.name } </p>
-                        <button onClick={ () => deleteTask(index) } >
-                            <img
-                                src={images.xLogo}
-                                alt='X'
-                            />
-                        </button>
-                    </li>
-                )
-            } )
-        )
-    }
-
     const addTask = event => {
         if (event.code !== 'Enter' && event.type !== 'blur') return //Срабатывает только на Enter и событие blur
-        if (event.type === 'blur' && !taskName) return // Ошибок тут нет, поле просто будет без фокуса ждать ввод
+        if (event.type === 'blur' && !taskName) return // Ошибок тут нет, пустое поле просто будет без фокуса ждать ввод
         if (event.code === 'Enter' && !taskName) return setMessage('Имя задачи не должно быть пустым!', 'error', 'projects-page')
         if (taskName.length > 25) return setMessage('Имя задачи более 25 символов!', 'error', 'projects-page')
         setNewTasks([...newTasks, { name: taskName }])    // Добавляем имя задачи, id проекта и пользователя добавятся на сервере
@@ -44,7 +26,7 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
         setTaskName('') //Далее очищаем сопутствующие поля
     }
 
-    const deleteTask = index => {
+    const deleteNewTask = index => {
         setNewTasks(newTasks.filter((task, i) => i !== index))  // Отфильтровать из массива задачу с таким индексом
     }
 
@@ -62,14 +44,13 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
         }
     }
 
-    const taskItemProps = {
+    const addTaskItemProps = {
         isAddTask,
         setIsAddTask,
         taskName,
         setTaskName,
         addTask,
         plusLogo: images.plusLogo,
-        xLogo: images.xLogo
     }
 
     return (
@@ -115,10 +96,12 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
                     />
                 </li>
                 <li className='tasks' >
-                    <ul className='tasks-list'>
-                        { getTasks() }
-                        <AddTaskItem {...taskItemProps} />
-                    </ul>
+                    <TaskList
+                            xLogo={ images.xLogo }
+                            newTasks={ newTasks }
+                            deleteNewTask={ deleteNewTask }
+                            addTaskItemProps={ addTaskItemProps }
+                    />
                 </li>
             </ul>
         </li>
