@@ -10,36 +10,19 @@ const TaskItem = ({ isAddTask, setIsAddTask, taskName, setTaskName, addTask, plu
     }
 
     return (
-        <li className='task-item' >
-        {
-            isAddTask
-                ? <>
-                    <input
-                        className='add-task text'
-                        value={ taskName }
-                        placeholder='Название задачи...'
-                        onChange={ (e) => setTaskName(e.target.value) }
-                        onKeyDown={ addTask }
-                        onBlur={ addTask }
-                        autoFocus
-                    />
-                    <button onClick={ closeTaskInput } >
+        <li className='task-item' key={ task._id }>
+            <p className={ (isEdit === project._id) ? 'text' : 'text mar-r' } > { task.name } </p>
+            {
+                (isEdit === project._id)
+                    ? <button onClick={ () => deleteExistingTask(task._id) } >
                         <img
-                            src={ xLogo }
+                            src={images.xLogo}
                             alt='X'
                         />
                     </button>
-                </>
-                : <button
-                    onClick={ (e) => setIsAddTask(!isAddTask) }
-                >
-                    <img
-                        src={ plusLogo }
-                        alt='Add'
-                    />
-                </button>
-        }
-    </li>
+                    : null
+            }
+        </li>
     )
 
 }

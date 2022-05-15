@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useFetchData } from '../../../hooks/useFetchData'
-import TaskItem from '../TaskItem/TaskItem'
+import AddTaskItem from '../AddTaskItem/AddTaskItem'
 import images from '../../../components/img/img'
 import './NewProjectItem.css'
 
@@ -117,7 +117,7 @@ const NewProjectItem = ({ cancelProjectAddition, setMessage }) => {
                 <li className='tasks' >
                     <ul className='tasks-list'>
                         { getTasks() }
-                        <TaskItem {...taskItemProps} />
+                        <AddTaskItem {...taskItemProps} />
                     </ul>
                 </li>
             </ul>

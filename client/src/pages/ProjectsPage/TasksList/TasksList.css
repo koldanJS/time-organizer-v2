@@ -1,0 +1,26 @@
+.projects li.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+}
+.projects li.task-item button {
+    border: none;
+    height: 15px;
+    width: 15px;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: all .2s;
+}
+.projects li.task-item button:hover img {
+    opacity: .6;
+}
+
+@media screen and (max-width: 800px) {
+    .projects li.task-item button {
+        height: 7px;
+        width: 7px;
+    }
+}

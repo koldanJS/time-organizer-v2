@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useFetchData } from '../../../hooks/useFetchData'
-import TaskItem from '../TaskItem/TaskItem'
+import AddTaskItem from '../AddTaskItem/AddTaskItem'
 import images from '../../../components/img/img'
 import './ProjectItem.css'
 
@@ -201,7 +201,7 @@ const ProjectItem = ({ project, isEdit, changeIsEdit, isAddNewProject, setMessag
                         { getTasks() }
                         {
                             (isEdit === project._id)
-                                ? <TaskItem {...taskItemProps} />
+                                ? <AddTaskItem {...taskItemProps} />
                                 : null
                         }
                     </ul>
