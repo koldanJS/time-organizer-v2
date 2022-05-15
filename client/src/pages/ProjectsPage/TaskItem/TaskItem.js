@@ -1,4 +1,5 @@
 import React from 'react'
+import './TaskItem.css'
 
 const TaskItem = ({ isAddTask, setIsAddTask, taskName, setTaskName, addTask, plusLogo, xLogo }) => {
 
