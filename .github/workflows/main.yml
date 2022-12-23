@@ -28,6 +28,8 @@ jobs:
   my_deploy:
     runs-on: ubuntu-20.04
     needs: [my_testing]
+    env:
+      VAR: "this is job level variable"
 
     steps:
       - name: Print Deploy Package Name
@@ -38,3 +40,10 @@ jobs:
 
       - name: Check zip
         run: zip --version
+
+      - name: Check zip
+        run: |
+          echo "Job level var is ${{ env.VAR }}"
+          echo "Step level var is $LOCAL_VAR"
+        env:
+          LOCAL_VAR: "Step level variable"
