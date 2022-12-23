@@ -1,1 +1,21 @@
 name: study-actions
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  my_testing:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Print Hello message
+        run: echo "Hello World from testing"
+  
+  my_deploy:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Print Hello message
+        run: echo "Hello World from deploy"
