@@ -1,4 +1,7 @@
 name: study-actions
+env:
+  APPLICATION_NAME: "time-organizer"
+  DEPLOY_PACKAGE_NAME: "time-organizer-deploy-ver-${{ github.sha }}"
 
 on:
   push:
@@ -12,10 +15,20 @@ jobs:
     steps:
       - name: Print Hello message
         run: echo "Hello World from testing"
+
+      - name: Execute few commands
+        run: |
+          echo "Message1"
+          echo "Message2"
+          echo "Application name: ${{ env.APPLICATION_NAME }}"
   
   my_deploy:
     runs-on: ubuntu-20.04
+    needs: [my_testing]
 
     steps:
       - name: Print Hello message
         run: echo "Hello World from deploy"
+
+      - name: Print Deploy Package Name
+        run: echo "Package Name is ${{ env.DEPLOY_PACKAGE_NAME }}"
